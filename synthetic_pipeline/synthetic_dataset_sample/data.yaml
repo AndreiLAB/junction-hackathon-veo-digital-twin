@@ -1,0 +1,6 @@
+path: C:\Users\bhand\veo360\dataset_test
+train: images/train
+val: images/val
+names:
+  0: abb_relion_615
+  1: nameplate
