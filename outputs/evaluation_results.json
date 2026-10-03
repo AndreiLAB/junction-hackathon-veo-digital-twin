@@ -1,0 +1,9 @@
+{
+    "total_queries": 324,
+    "top1_accuracy": 0.9382716049382716,
+    "top5_accuracy": 1.0,
+    "median_spatial_error_m": 0.0,
+    "mean_spatial_error_m": 0.09324129707863944,
+    "median_angular_error_deg": 0.0,
+    "average_inference_time_s": 0.058504866965023085
+}

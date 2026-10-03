@@ -1,0 +1,10 @@
+pye57
+numpy
+pandas
+Pillow
+torch
+torchvision
+scikit-learn
+opencv-python
+transformers
+tqdm

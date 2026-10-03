@@ -1,0 +1,26 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Local scratch files
+scratch_inspect*.py
+
+# Large datasets and database
+dataset/images/
+dataset/augmented/
+dataset/*.e57
+*.e57
+
+# PyTorch / IDE caches
+.idea/
+.vscode/
+*.swp
+*.swo
