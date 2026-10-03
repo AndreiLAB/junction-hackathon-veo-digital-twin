@@ -148,6 +148,16 @@ Library use: `from kb_search import search; search(con, question, k=5, model="AB
 
 Serves one **tag per cabinet** (H05, H04, H03, H02, H01, VLK, OT1, TSK1, TSK2, OKK1) with its devices (e.g. the ABB 615 relay), documents (PDFs from the knowledge base) and picture. The existing viewer (Matterport / VEO360) consumes `GET /tags`; write-back to Matterport/VEO360 is **not implemented** (the API and its write permission are unconfirmed).
 
+### How the model and the backend fit together
+
+```
+skybox images --> model (detect + OCR, offline) --> detections.json --> POST /detections --> tags --> GET /tags --> viewer
+```
+
+- The **model side** reads the skybox images. The **backend never receives or needs them**; it only receives the detection results.
+- Images the backend does accept are optional: the cabinet picture (`PUT /tags/{id}/image`, display only) and the `/detect` stub (a hook for running the model live later).
+- A detection should carry its `position` (x, y, z in scan coordinates). Without it the device is created but left unassigned with `needs_review`. Computing it from pixel + camera pose (`locate()`) is not built yet.
+
 ### Run
 
 ```bash
