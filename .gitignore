@@ -25,6 +25,3 @@ dataset/*.e57
 *.swp
 *.swo
 
-# manuals (ABB documents, ~140 MB): share via Drive, rebuild with scripts/ingest_docs.py
-docs/
-*.pdf

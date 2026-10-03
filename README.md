@@ -131,7 +131,7 @@ Manuals converted to section-based Markdown and a searchable SQLite database, so
 
 - `data/knowledge.db`: `documents` (title, model, doc number, PDF path, pages), `chunks` (section path, page range, text) and an FTS5 index `chunks_fts`.
 - `docs_md/<folder>/<manual>.md`: readable Markdown with `<!-- p.N -->` page markers.
-- The PDFs are **not in git** (about 140 MB). Put them in `docs/abb_615/`, `docs/unigear_zs2/`, `docs/vd4/` (shared via Drive).
+- The source PDFs are in `docs/abb_615/`, `docs/unigear_zs2/`, `docs/vd4/` (about 137 MB; the folder name sets the model).
 
 ```bash
 pip install pymupdf
