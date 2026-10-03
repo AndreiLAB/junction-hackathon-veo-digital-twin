@@ -17,6 +17,11 @@ reference is `synthetic_geo/ANTIGRAVITY_PROMPT.md` (read it only if you need the
 * **`VEO Images/`** (108 real cube-face photos 4096x4096 + `cameras.json`), only needed for the real evaluation in step 4.
 Ask the user for the paths; do not guess.
 
+## 1b. READ FIRST: the supplied dataset is v1 and has a KNOWN DEFECT
+Read `synthetic_geo/DATASET_CARD.md` (also inside the dataset zip). In short: real ABB relays on cabinet **OT1** (and probably VLK/OKK1) are **unlabelled** in the tiles, which is systematic label noise.
+**Do the remedy in section 4 of that card (measure those relays, extend the geometry, regenerate the whole dataset as v2) before the final training run**, and train v1 only as a baseline for comparison,
+unless the user tells you otherwise. Report v1 vs v2 on the real held-out photos.
+
 ## 2. Step 1: validate the dataset (mandatory, before any training)
 Write `synthetic_geo/check_dataset.py` and run it. It must: count images/labels per split and per class; fail if an image has no label file, a label has a class other than 0/1,
 or a coordinate is outside [0,1]; print box-width histograms per class; save a contact sheet of 40 random tiles per split with boxes drawn (`check_train.jpg`, `check_val.jpg`).
