@@ -1,0 +1,39 @@
+{
+ "tag": "TSK1",
+ "x": -2.729,
+ "y": -4.878,
+ "z": 1.477,
+ "method": "least-squares intersection of camera rays through the orange 'TSK1' tape centre in 5 images (img_037, 063, 069, 075, 082)",
+ "camera_convention": "cam = diag(1,-1,-1) @ R.T @ (P - C), verified on 4 labels within 29 px",
+ "ray_residual_m": {
+  "37": 0.007,
+  "63": 0.007,
+  "69": 0.006,
+  "75": 0.001,
+  "82": 0.002
+ },
+ "pixels": {
+  "img_037": [
+   1795,
+   1892
+  ],
+  "img_063": [
+   1426,
+   2042
+  ],
+  "img_069": [
+   2299,
+   2056
+  ],
+  "img_075": [
+   3159,
+   2081
+  ],
+  "img_082": [
+   220,
+   2089
+  ]
+ },
+ "cross_check": "img_088 and img_094 not used: tape too small/far to detect automatically (predicted at 3.5 m and 4.9 m)",
+ "note": "derived from images only, not from the point cloud; solo view is img_037"
+}

@@ -1,0 +1,161 @@
+{
+ "site": "eHouse",
+ "coordinate_frame": "E57 file coordinates, same frame as VEO Images/cameras.json",
+ "cabinets": {
+  "H01": {
+   "name": "H01 - PT1",
+   "position": {
+    "x": -5.728,
+    "y": -5.782,
+    "z": 1.313
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": "UniGear ZS2",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "expects_relay": true,
+   "document_models": [
+    "UniGear ZS2",
+    "VD4"
+   ],
+   "images": true
+  },
+  "H02": {
+   "name": "H02 - STATION TRANSFORMER",
+   "position": {
+    "x": -5.746,
+    "y": -4.513,
+    "z": 1.404
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": "UniGear ZS2",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "expects_relay": true,
+   "document_models": [
+    "UniGear ZS2",
+    "VD4"
+   ],
+   "images": true
+  },
+  "H03": {
+   "name": "H03 - METERING",
+   "position": {
+    "x": -5.737,
+    "y": -3.518,
+    "z": 1.402
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": "UniGear ZS2",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "expects_relay": true,
+   "document_models": [
+    "UniGear ZS2",
+    "VD4"
+   ],
+   "images": true
+  },
+  "H04": {
+   "name": "H04 - SOLAR 1",
+   "position": {
+    "x": -5.757,
+    "y": -2.516,
+    "z": 1.401
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": "UniGear ZS2",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "expects_relay": true,
+   "document_models": [
+    "UniGear ZS2",
+    "VD4"
+   ],
+   "images": true
+  },
+  "H05": {
+   "name": "H05 - SOLAR 2",
+   "position": {
+    "x": -5.76,
+    "y": -1.517,
+    "z": 1.401
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": "UniGear ZS2",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "expects_relay": true,
+   "document_models": [
+    "UniGear ZS2",
+    "VD4"
+   ],
+   "images": true
+  },
+  "VLK": {
+   "name": "VLK",
+   "position": {
+    "x": -2.718,
+    "y": -6.55,
+    "z": 1.419
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": null,
+   "panel_model_source": null,
+   "expects_relay": false,
+   "document_models": [],
+   "images": false
+  },
+  "OT1": {
+   "name": "OT1",
+   "position": {
+    "x": -2.72,
+    "y": -5.766,
+    "z": 1.579
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": null,
+   "panel_model_source": null,
+   "expects_relay": false,
+   "document_models": [],
+   "images": false
+  },
+  "TSK1": {
+   "name": "TSK1",
+   "position": {
+    "x": -2.729,
+    "y": -4.878,
+    "z": 1.477
+   },
+   "position_source": "triangulated from tape in img_037/063/069/075/082 (VEO Images/tsk1_position.json)",
+   "panel_model": null,
+   "panel_model_source": null,
+   "expects_relay": false,
+   "document_models": [],
+   "images": false
+  },
+  "TSK2": {
+   "name": "TSK2",
+   "position": {
+    "x": -2.726,
+    "y": -4.091,
+    "z": 1.552
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": null,
+   "panel_model_source": null,
+   "expects_relay": false,
+   "document_models": [],
+   "images": false
+  },
+  "OKK1": {
+   "name": "OKK1",
+   "position": {
+    "x": -2.328,
+    "y": -1.948,
+    "z": 2.361
+   },
+   "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
+   "panel_model": null,
+   "panel_model_source": null,
+   "expects_relay": false,
+   "document_models": [],
+   "images": false
+  }
+ }
+}
