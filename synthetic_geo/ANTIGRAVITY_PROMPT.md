@@ -122,10 +122,11 @@ Report: precision, recall, AP50 for `abb_relion_615`; **how often the TSK1/TSK2 
 detector + geometry are shown separately (the gate must not hide model weakness). If time allows, a baseline trained only on the 4 raw renders. State clearly that everything comes
 from **one site**, so the numbers show in-site performance, not generalisation to other sites. Include 2-3 failure cases (images) and how `needs_review` handles them.
 
-## 12. Hand-off to the backend
-Produce `detections.json` for the 108 images: a list of `{"image": "img_067.jpg", "class": "abb_relion_615", "conf": 0.91, "box": [x, y, w, h], "ocr": [], "ocr_conf": null, "position": null}`
-(`box` in FULL-image pixels = tile detections + tile origin, merged with NMS). The FastAPI backend ingests it at `POST /detections`; `class` must be exactly `abb_relion_615`
-(`other_hmi` is ignored). Cabinet assignment and `needs_review` are done by the backend and the gate.
+## 12. Hand-off to the backend (the model's output IS the backend's input)
+Run `python synthetic_geo/export_detections.py --weights <best.pt> --images "VEO Images" --cameras "VEO Images/cameras.json" --out detections.json` (and `--selftest` first). It tiles each photo (1280, stride 960),
+runs YOLO, maps boxes to FULL-image pixels, applies NMS and the location gate, and writes `detections.json` in exactly the shape of `POST /detections`:
+`{"image","class":"abb_relion_615","conf","box":[x,y,w,h],"ocr":[],"ocr_conf":null,"position":{x,y,z}|null}`. `position` is the detection's centre ray intersected with the relay front plane of the gate-assigned cabinet;
+`null` if the gate rejected it (the backend then flags `needs_review`). Low-confidence/rejected detections stay in the file. `other_hmi` is never exported. Tested with a stub model against the real backend.
 
 ## 13. Deliverables, in order
 1. Dataset generated + `check_dataset.py` report (counts, sheets, defects found/fixed).

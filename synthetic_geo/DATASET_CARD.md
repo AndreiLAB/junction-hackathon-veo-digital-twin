@@ -43,7 +43,8 @@ Validated: every image has a label file; all class ids are 0/1; all coordinates 
    `geometry.Camera.ray(u, v)` onto the cabinet's door plane (`x = cabinet x`), subtract the cabinet position. Confirm each by projecting the predicted box into >= 8 other photos and looking at a contact sheet.
    Do NOT use automatic template matching (it failed: NCC 0.3-0.4).
 2. **Extend the geometry** (`relay_geometry.json` + `generate_geo_synthetic.py`): allow several relays per cabinet and a per-cabinet case size; add OT1/VLK/OKK1 (set `expects_relay` in `cabinet_registry.json` only after the mentors or photos confirm they are 615-series).
-   Apply the same remove-and-replace and labelling as for H01-H05, including `location_gate.py`.
+   Apply the same remove-and-replace and labelling as for H01-H05, including `location_gate.py`. **The cabinet list ("H01".."H05") is hard-coded in `generate_geo_synthetic.py` (`plan`, `main`) and `location_gate.py` (`Gate.expected`); extend all of them,
+   otherwise the gate will reject relays on the new cabinets and `export_detections.py` will give them `position: null`.**
 3. **Re-measure the Cerdex centres** from 3-4 photos and tighten the box (`relay_geometry.json: other_hmi`).
 4. **Fix far-relay appearance:** cap the noise estimate (e.g. at 0.6x) and compare patch statistics against the real, unlabelled OT1 relays at similar distances (they are real far-relay references).
 5. **Add small/far relays to validation** (hold out some far pairs, or rely on the real evaluation set).

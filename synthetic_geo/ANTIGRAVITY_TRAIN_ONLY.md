@@ -53,10 +53,21 @@ boxes to full-image pixels, NMS, and report: precision, recall, AP50 for `abb_re
 (IoU >= 0.30, width ratio 0.6-1.6), assigning the cabinet. Test it first: `python synthetic_geo/location_gate.py` (expected: exact box accepted, displaced box rejected,
 `other_hmi` rejected). Then report the real-set numbers **twice: detector alone, and detector + gate**, so the gate cannot hide model weakness.
 
-## 6. Step 5: export for the backend
-Write `detections.json` for the 108 real photos: a list of
-`{"image": "img_067.jpg", "class": "abb_relion_615", "conf": 0.91, "box": [x, y, w, h], "ocr": [], "ocr_conf": null, "position": null}`
-(`box` in FULL-image pixels; `other_hmi` is not exported). The FastAPI backend ingests it at `POST /detections`.
+## 6. Step 5: export for the backend (the model's output IS the backend's input)
+Use `synthetic_geo/export_detections.py` (do not hand-roll this; it is tested against the backend):
+```bash
+python synthetic_geo/export_detections.py --selftest        # logic test, no weights needed: must print "selftest OK"
+python synthetic_geo/export_detections.py --weights runs_relay/geo_synth/weights/best.pt --images "<VEO Images>" --cameras "<VEO Images>/cameras.json" --out detections.json
+```
+Pipeline per 4096x4096 photo: 1280 px tiles (stride 960, native resolution) -> YOLO -> boxes back to FULL-image pixels -> per-class NMS -> location gate -> backend format.
+**`detections.json` is exactly what the backend takes at `POST /detections`:** a list of
+`{"image": "img_067.jpg", "class": "abb_relion_615", "conf": 0.91, "box": [x, y, w, h], "ocr": [], "ocr_conf": null, "position": {"x": -5.676, "y": -4.778, "z": 1.841}}`
+* `box` = top-left x, y, width, height in full-image pixels; `conf` in [0,1]; `class` must be exactly `abb_relion_615` (`other_hmi` is never exported, it is only used to reject look-alikes).
+* `position` = the detection's centre ray intersected with the relay front plane of the cabinet the gate assigned (a measurement from the detection); **`null` when the gate rejected it**, so the backend flags it `needs_review`.
+* Keep low-confidence and rejected detections in the file (default `--conf 0.25`): the backend flags them, nothing is silently dropped. Do not filter by confidence yourself.
+* `detections_detail.json` (written next to it) adds cabinet, gate decision/reason, IoU and the `other_hmi` detections for the report.
+Verified behaviour (stub model, real backend): an accepted detection became a device on cabinet H02 with the REX615 manual; a displaced one and a 0.30-confidence one were created with `needs_review` and reasons.
+Report: number of detections, how many placed by the gate, how many per cabinet. If you extend the geometry (remedy), the gate and the exporter pick up the new cabinets only if `location_gate.py` and the cabinet loops are extended too (see the card, remedy step 2).
 
 ## 7. Deliverables, in order
 1. `check_dataset.py` output and the two contact sheets, with the defects you saw (or "none").
