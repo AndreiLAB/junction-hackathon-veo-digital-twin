@@ -121,3 +121,22 @@ Outputs:
 - `outputs/evaluation_report.md`
 - `outputs/evaluation_results.json`
 - `outputs/retrieval_contact_sheet.jpg`
+
+
+---
+
+## Manuals knowledge base (REX615, UniGear ZS2, VD4)
+
+Manuals converted to section-based Markdown and a searchable SQLite database, so tags can return their PDFs and an optional `/ask` can answer with page citations.
+
+- `data/knowledge.db`: `documents` (title, model, doc number, PDF path, pages), `chunks` (section path, page range, text) and an FTS5 index `chunks_fts`.
+- `docs_md/<folder>/<manual>.md`: readable Markdown with `<!-- p.N -->` page markers.
+- The PDFs are **not in git** (about 140 MB). Put them in `docs/abb_615/`, `docs/unigear_zs2/`, `docs/vd4/` (shared via Drive).
+
+```bash
+pip install pymupdf
+python scripts/ingest_docs.py                                   # rebuild (about 5 min for the 1,985-page REX615 manual)
+python scripts/kb_search.py "READY LED" --model "ABB 615"       # search with citations, prints "not found" if nothing matches
+python scripts/kb_eval.py                                       # retrieval test: 11/11 in top 3
+```
+Library use: `from kb_search import search; search(con, question, k=5, model="ABB 615")` returns chunks with document, section path and page range.
