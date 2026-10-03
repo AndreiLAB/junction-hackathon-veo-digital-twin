@@ -9,3 +9,8 @@ opencv-python
 transformers
 tqdm
 pymupdf
+fastapi
+uvicorn
+python-multipart
+httpx
+pytest
