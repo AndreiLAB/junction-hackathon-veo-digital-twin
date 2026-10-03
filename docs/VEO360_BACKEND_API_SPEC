@@ -1,0 +1,345 @@
+TECHNICAL SPECIFICATION: REST API BACKEND AND DATA STRUCTURE OF THE VEO360 DIGITAL TWIN PLATFORM
+1. System architecture and general principles
+1.1 Introductory context and strategic significance
+A backend service based on the high-performance FastAPI framework serves as the central architectural core of the VEO360 digital twin platform. The server-side component ensures strict decoupling between the autonomous offline computer vision pipeline (which extracts data from ASTM E57 spatial scans, performs hardware detection, and optical character recognition (OCR)) and external client visualization interfaces (3D Viewer / Matterport). Interacting via a standardized REST API, the backend aggregates attribute and spatial data, manages the digital twin's topological graph, indexes regulatory and technical documentation, and provides deterministic data contracts for client web applications.
+1.2 Data flow analysis and separation of concerns
+The transfer of spatial and attribute data in the VEO360 platform is organized as a consistent end-to-end pipeline:
+\text{Panorama frames (skybox)} \longrightarrow \text{Offline model (detect + OCR)} \longrightarrow \texttt{detections.json} \longrightarrow \texttt{POST /detections} \longrightarrow \text{Tags/devices database} \longrightarrow \texttt{GET /tags} \longrightarrow \text{3D Viewer}
+The system architecture clearly delineates areas of responsibility: the FastAPI backendisolated from performing direct heavy calculationsover multi-gigabyte E57 point clouds and panoramic frames. All resource-intensive geometric back-projection (raycasting) and scan processing operations are performed exclusively within the autonomous offline pipeline (process_e57.py / e57/raycast.py). The FastAPI HTTP service receives through an endpointPOST /detectionsa ready-made structured JSON dump of detections containing pre-calculated 3D world coordinates (x, y, z) or raw 2D bounding boxes. If the detection is received without 3D coordinates (position == null), the backend does not try to run spatial calculations on the fly, but keeps the device in the unallocated status (unassigned) with the required check flag set (needs_review = true).
+The key software modules of the backend and autonomous pipeline are:
+backend/main.py: The main FastAPI executable module, which contains web application initialization, HTTP request routing, Pydantic schema declaration, processing of business logic for binding devices to cabinets, and primary seed initialization of the database.
+backend/storage.py: File Storage Abstraction Module (LocalStorage), implementing the persistence interfaces (save), existence checks (exists), formation of URLs (url) and file search (find). Using the "Strategy" pattern allows for seamless migration of the local file system to S3-compatible cloud storage (AWS S3, Azure Blob Storage) without making changes to the routers.backend/main.py.
+e57/raycast.py: Isolated offline spatial geometry module (called withinprocess_e57.py), which performs matching of 2D coordinates of pixels in skybox frames with 3D point cloud E57 using the ray intersection method with the front surface of the object.
+knowledge/adapter.py: A knowledge base integration module that wraps the full-text search algorithm (scripts/kb_search.py) for semantic matching of detected equipment classes with operating manuals.
+1.3 Environment Variables
+The application's operation and business logic are configured using environment variables, a summary list of which is presented in the table:
+Env variable
+Default
+Meaning
+VEO_DB
+data/veo.db
+Path to the SQLite operational database containing the registry of cabinets (tags) and associated devices.
+KNOWLEDGE_DB
+data/knowledge.db
+Path to the relational database of technical documentation with a full-text index FTS5.
+DOCS_DIR
+docs
+Root directory for storing original PDF files of operating manuals.
+ASSETS_DIR
+assets
+Directory of static storage of contextual photos of cabinets and cropped detection evidence (crops).
+VEO_SITE
+eHouse
+The symbolic identifier of the digital twin industrial site returned in the response bodyGET /tags.
+CONF_MIN
+0.5
+The confidence score threshold for the model, below which the detection is flaggedneeds_review.
+MAX_ASSIGN_DIST
+2.0
+The maximum Euclidean distance in meters from the device's 3D coordinate to the cabinet centroid for automatic binding.
+
+Parameter estimationCONF_MIN And MAX_ASSIGN_DISTdemonstrates their critical influence on the correctness of the formation of the equipment topological graph:
+Overstating the thresholdCONF_MINleads to the fact that highly accurate detections with minor deviations in confidence are massively flaggedneeds_review = true, generating false tasks for the operator. UnderestimationCONF_MINentails the automatic addition of false-positive computer vision artifacts into the working contour of the digital twin without verification.
+UnderstatementMAX_ASSIGN_DISTleads to a break in communication: correctly detected protection relays remain in the unattached status (unassigned), even if they are physically mounted on the front panel of the cabinet. OverestimationMAX_ASSIGN_DISTIn conditions of dense arrangement of distribution device (RU) cells, this leads to an erroneous connection of the device to the adjacent cabinet, distorting the actual topology of the electrical network.
+The resulting separation of system responsibilities and configuration model provide a platform for designing a relational data storage structure.
+2. Structure and schema of relational databases
+2.1 Introductory context and strategic significance
+To ensure a balance between the speed of web query processing, the detail of spatial analysis and the efficiency of full-text search, the VEO360 platform implements a hybrid division of data into three specialized SQLite databases: an operational relational entity database (data/veo.db), knowledge base of technical documentation (data/knowledge.db) and an extended spatial localization database (dataset/veo_localization.db).
+2.2 Database diagram of operational tags and devices (data/veo.db)
+Operational databasedata/veo.dbDesigned to handle low-latency requests from the REST API, the backend automatically initializes the table structure and performs an initial seed load of 10 reference cell cabinets upon first launch:H05, H04, H03, H02, H01, WOLF, OT1, TSK1, TSK2, OKK1.
+An important architectural feature: during initializationdata/veo.dbspatial coordinates (x, and, With), confidence indicators (confidence), context images and device lists for cabinets are seeded with valuesnull/ empty arrays. Full filling of the attribute composition occurs exogenously - either by calling batch importPOST /import/cabinets, or when processing incoming detectionsPOST /detections.
+The essence of a cabinet (tag) includes the following attribute composition:
+id (str): Unique identifier of the cabinet (eg."H05").
+name (str): The display name of the cell.
+folder (str): Hierarchical folder/equipment group (default)"Switchgear").
+position (Position3D): Coordinates of the centroid{x, y, z}in the world coordinate system of the scan.
+confidence (float): Aggregated indicator of position determination confidence.
+needs_review (bool): Flag indicating the need for manual audit by the operator.
+image (str): Relative URL path to the cabinet context image.
+image_is_placeholder (bool): A sign that a default placeholder is being used instead of a real photo.
+read_as (str): The marking text read by the OCR module.
+sightings (int): The total number of angles/scans at which the object is captured.
+evidence_crop (str): Path to the cut frame-proof of detection.
+doc_models (list[str]): List of equipment models for the official connection with documentation.
+documents (list[DocumentOut]): An array of strictly validated objects of linked documents.
+devices (list[DeviceOut]): List of devices mounted on the cabinet (e.g. relaysabb_relion_615).
+Strong data typing at the FastAPI and OpenAPI specification level is provided by deterministic Pydantic models:
+from pydantic import BaseModel
+from typing import Optional, List
+
+class Position3D(BaseModel):
+    x: float
+    y: float
+    z: float
+
+class DocumentOut(BaseModel):
+id: you
+    title: str
+model: street
+    url: str
+    doc_number: Optional[str] = None
+    pages: Optional[int] = None
+
+class DeviceOut(BaseModel):
+id: street
+    cabinet_id: Optional[str] = None
+    device_class: str
+    confidence: float
+    position: Optional[Position3D] = None
+    needs_review: bool = False
+    review_reasons: List[str] = []
+    documents: List[DocumentOut] = []
+
+class CabinetTagOut(BaseModel):
+id: street
+    name: str
+    folder: Optional[str] = "Switchgear"
+    position: Optional[Position3D] = None
+    confidence: Optional[float] = None
+    needs_review: bool = False
+    image: Optional[str] = None
+    image_is_placeholder: bool = True
+    read_as: Optional[str] = None
+    sightings: Optional[int] = None
+    evidence_crop: Optional[str] = None
+    doc_models: List[str] = []
+    documents: List[DocumentOut] = []
+    devices: List[DeviceOut] = []
+
+2.3 Knowledge base and full-text search scheme (data/knowledge.db)
+The knowledge base stores the structured content of technical operating manuals. The schema consists of two basic tables and one virtual FTS5 table:
+Tabledocuments:
+id (INTEGER PRIMARY KEY): Unique numeric identifier of the document.
+title (TEXT): The full title of the manual (e.g."ABB 615 Protection Relay Manual").
+model (TEXT): Equipment model ("ABB 615", "UniGear ZS2", "VD4").
+doc_number (TEXT): Document nomenclature number (e.g."1MRS756500").
+pdf_path (TEXT): Path to the original PDF file relative toDOCS_DIR.
+pages (INTEGER): Document volume in pages.
+Tablechunks:
+id (INTEGER PRIMARY KEY): Text fragment identifier.
+doc_id (INTEGER FOREIGN KEY): Link to documents(id).
+section_path (TEXT): Hierarchical path to the section (e.g."3. Protection Functions / 3.2 READY LED Status").
+page_start (INTEGER): Initial page of the fragment.
+page_end (INTEGER): The final page of the fragment.
+text (TEXT): Extracted text content with explicit page breaks<!-- p.N -->.
+FTS5 Virtual Tablechunks_fts:
+Initialized via the SQLite FTS5 module: CREATE VIRTUAL TABLE chunks_fts USING fts5(text, content='chunks', content_rowid='id').
+Performance analysis shows that despite the time required for the initial index build (about 5 minutes for the 1,985-page REX615 manual,scripts/ingest_docs.py), FTS5 provides instant (less than 15 milliseconds) full-text search with model limitationd.model = 'ABB 615', returning exact text fragments and page ranges.
+2.4 Extended spatial scheme (dataset/veo_localization.db)
+The spatial database is used by the E57 generation processes, DINOv2 vectorization, and the offline localization pipeline. The schema includes seven relational tables, described in the table:
+Table
+Purpose
+Key fields
+scans
+3D scanner sweep metadata
+id, guid, name, x, and, With, qw, qx, qy, girl
+images
+Extracted panoramic frames from skybox
+id, scan_id, file_path, dimensions, pos/rot, projection_type
+cubicles
+Register of physical cells of the Russian Federation
+id, name, location_x, location_y, location_z
+assets
+Equipment instances on site
+id, cubicle_id, type, manufacturer, model
+detections
+Raw 2D model detections from the frame
+id, image_id, bbox, class, confidence
+documents
+Register of regulatory documentation files
+id, asset_id (or tag_id), file_path, title
+tags
+Final Aggregated Digital Twin Tags
+tag_id, parent_tag_id, label, asset_type, description, x, and, With, anchor_x, anchor_y, anchor_z, source_scan_id, source_image_id, confidence
+
+Spatial delimitation: Fields(x, y, z)in the tabletagsdefine the calculated geometric centroid of the volumetric bounding box of the object, while(anchor_x, anchor_y, anchor_z)capture the exact 3D intersection point of the raycasting beam with the front physical surface of the point cloud.
+The rigorous design of the hybrid database structure ensures complete data integrity, creating a fundamental basis for the REST API specification.
+3. REST API Specification (FastAPI Endpoint Contracts)
+3.1 Introductory context and strategic significance
+The REST API is a deterministic contract for interaction between the backend service, external standalone computer vision modules, and the VEO360 Viewer web user interface. The API enables reading the spatial state of the digital twin, manual parameter editing, batch import of recognition results, and documentation navigation.
+3.2 Cabinet and Tag Management Endpoints
+GET /health
+Description: Monitoring service status, counters of downloaded objects, and knowledge base availability.
+Parameters: None.
+Returns: {"status": "ok", "cabinets": 10, "devices": 12, "knowledge_base": true}.
+GET /tags
+Description: Getting a register of all cabinets (tags) with filtering.
+Query Parameters: needs_review (bool, optional),folder (str, optional).
+Returns: Object{site: str, count: int, tags: [CabinetTagOut]}.
+Example JSON response:
+{
+  "site": "eHouse",
+  "count": 1,
+  "tags": [
+    {
+"id": "H05",
+      "name": "H05",
+      "folder": "Switchgear",
+      "position": {"x": -5.760, "y": -1.517, "z": 1.401},
+      "confidence": 1.0,
+      "needs_review": false,
+      "image": "/assets/context/H05.jpg",
+      "image_is_placeholder": false,
+      "read_as": "H05",
+      "sightings": 4,
+      "evidence_crop": "/assets/crops/H05_crop.jpg",
+      "doc_models": ["UniGear ZS2", "VD4"],
+      "documents": [
+        {
+          "id": 1,
+          "title": "UniGear ZS2 Installation Manual",
+          "model": "UniGear ZS2",
+          "url": "/documents/1/file",
+          "doc_number": "1VCP000156",
+          "pages": 120
+        }
+      ],
+      "devices": [
+        {
+          "id": "dev-a89489d1",
+          "cabinet_id": "H05",
+          "device_class": "abb_relion_615",
+          "confidence": 0.92,
+          "position": {"x": -5.758, "y": -1.490, "z": 1.423},
+          "needs_review": false,
+          "review_reasons": [],
+          "documents": [
+            {
+              "id": 2,
+              "title": "ABB 615 Protection Relay Manual",
+"model": "ABB 615",
+              "url": "/documents/2/file",
+              "doc_number": "1MRS756500",
+              "pages": 1985
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+GET /tags/{id}
+Description: Request detailed data by cabinet ID.
+Path parameters: id (str, For example "H05").
+Returns: ObjectCabinetTagOut. If idmissing from the database, returns HTTP status404 Not Found.
+PATCH /tags/{id}
+Description: Partial editing of cabinet attributes.
+Path parameters: id (str).
+Request body (JSON): {"name": str, "x": float, "y": float, "z": float, "needs_review": bool, "doc_models": list[str]}(all fields are optional).
+Returns: Updated objectCabinetTagOut.
+PUT /tags/{id}/image
+Description: Loading context binary image of cabinet.
+Path parameters: id (str).
+Form data: Multipart file (.jpg, .jpeg, .png, .webp).
+Query Parameters: placeholder (bool, default true).
+Returns: UpdatedCabinetTagOut; the file is saved to the pathassets/context/{id}.<ext>.
+3.3 Detection and localization import endpoints
+POST /import/cabinets
+Description: Batch import of preset 3D cabinet positions (compatible with .NET format)synthetic_pipeline/labels_out/tags.json).
+Request body (JSON): List of objects[{"tag": "H05", "name": "H05", "x": -5.76, "y": -1.51, "z": 1.40, "confidence": 1.0, "sightings": 4, "read_as": "H05", "evidence_crop": "path.jpg"}].
+Returns: {"updated": 10, "added": 0}.
+POST /detect
+Description: Stub for future running of the real-time inference model.
+Form data: Multipart frame file, query parameterimage_name (str, optional).
+Returns: {"model": "stub", "detections": []}(heavy models are not initialized at the moment, emulation is not performed).
+POST /detections
+Description: Receiving the results of the detection model and OCR.
+Request body (JSON): Array of detection objects of the following format:
+[
+  {
+    "image": "scan_014_skybox_1.jpg",
+    "class": "abb_relion_615",
+    "conf": 0.92,
+    "box": [102.0, 50.5, 200.0, 150.0],
+    "ocr": ["REX615"],
+    "ocr_conf": 0.88,
+    "position": {"x": -5.758, "y": -1.490, "z": 1.423}
+  }
+]
+
+Incoming format analysisPOST /detections: Field classaccepts strictly reserved names of target device classes (abb_relion_615, relay_front, relay_rear). Recognized elements of the typenameplateare filtered out and do not lead to the creation of device entities, as they are OCR evidence. Fieldboxis an array[x, y, w, h]rectangle coordinates in pixelsoriginalframe. Received relay objects are automatically transformed into entitiesDeviceOutand bind to the nearest cabinet. The response returns a structure{"created": [...], "ignored": [...]}.
+3.4 Device, Document, and RAG Search Endpoints
+GET /devices
+Description: Get a list of all registered devices.
+Query Parameters: unassigned (bool, optionally - filtering of devices not linked to any cabinet).
+Returns: {"devices": [DeviceOut]}.
+GET /documents And GET /documents/{id}
+Description: Request for technical documentation metadata.GET /documentsaccepts a query parametermodel (For example, "ABB 615").
+Returns: {"documents": [DocumentOut]}.
+GET /documents/{id}/file
+Description: Output binary contents of PDF file with headerContent-Type: application/pdf. Supports standard URL anchors for direct navigation to a page of the type/documents/1/file#page=10.
+POST /ask
+Description: Endpoint for full-text/semantic search in the normative documentation knowledge base (RAG/FTS).
+Request body (JSON): {"question": "READY LED status", "tag_id": "H05", "model": "ABB 615", "k": 5} (Where k— the number of returned passages from 1 to 20, default 5).
+Returns: {"found": bool, "answer": null, "passages": [PassageOut], "note": str}.
+A detailed description of the API contracts allows us to move on to mathematical algorithms for spatial localization of detections.
+4. Algorithms for 2D/3D localization and detection processing
+4.1 Introductory context and strategic significance
+Correct translation of two-dimensional bounding boxes[x, y, w, h]The conversion of the panoramic frame's pixel grid into the scan's 3D world coordinates (X, Y, Z) is key to the physical accuracy of the digital twin. This calculation is performed in the offline pipeline (process_e57.py) using the geometric modulee57/raycast.py.
+4.2 Raycasting / Point Cloud Intersection Algorithm
+The back projection and intersection point search algorithm consists of five deterministic steps:
+Loading a local point cloud: Stream reading of array of XYZ coordinates of a specific scanner stop is performed viae57.read_scan(i)without fully loading the E57 file into RAM.
+Transition to the camera coordinate system (Extrinsics): The world coordinates of the scan points P_{\text{world}} = (X, Y, Z)^T are transformed into the camera coordinate system P_c = (X_c, Y_c, Z_c)^T using the camera center translation vector C and the camera-to-world rotation matrix R_{c2w}:
+P_c = R_{c2w}^T (P_{\text{world}} - C)
+Pinhole projection onto a pixel grid (Intrinsics): The points P_c are projected into 2D frame pixels (u, v) using the focal length f and the optical center (c_x, c_y):
+\begin{pmatrix} u \\ v \end{pmatrix} = \begin{pmatrix} f \cdot \frac{X_c}{Z_c} + c_x \\ f \cdot \frac{Y_c}{Z_c} + c_y \end{pmatrix}
+Filtering by 2D Bounding Box and Front Plane Selection:
+3D points whose pixel coordinates (u, v) fall inside the detection rectangle are selectednear: \text{near} = (u, v) \in [\text{box}_{xmin}, \text{box}_{xmax}] \times [\text{box}_{ymin}, \text{box}_{ymax}]
+To prevent the beam from shooting through transparent or open elements, the background is cut off and the front physical surface is selected by depth z: \text{front} = z < \left( z_{min} \cdot 1.05 + 0.03 \right)
+3D anchor calculation: The final anchor coordinates are calculated as the median of the filtered front surface coordinates: \text{Anchor}_{3D} = \text{median}(\text{xyz}[\text{near}][\text{front}], \text{axis}=0)
+Approximation of focal length: If the parameterpinholeRepresentation.focalLengthis missing from the E57 metadata, the system automatically approximates the focal length as half the frame width (f = W / 2).
+4.3 Logic of automatic device binding and verification criteria (needs_review)
+After receiving the 3D coordinates of the device, the FastAPI backend is calledPOST /detectionsperforms its automatic binding to the spatial graph:
+The Euclidean distance from P_{\text{device}}(x,y,z) to the centroids of all registered cabinets is calculated.
+If the minimum distance d_{min} \le \text{MAX\_ASSIGN\_DIST} (default 2.0 m), the device automatically communicates with the cabinet (cabinet_id = cabinet.id).
+If d_{min} > \text{MAX\_ASSIGN\_DIST}, the device is stored with the valuecabinet_id = null.
+The detection is automatically flagged.needs_review = truewith adding records to the arrayreview_reasonsif any of the conditions are met:
+Classification confidence is below the established threshold:conf < CONF_MIN.
+Missing 3D coordinates:position == null(the model only transferred 2D bbox).
+Auto-binding threshold exceeded: d_{min} > \text{MAX\_ASSIGN\_DIST} (the nearest cabinet is too far away).
+The generated spatial graph is transferred to the knowledge base integration subsystem for linking documentation.
+5. Knowledge base integration and documentation linking
+5.1 Introductory context and strategic significance
+Automatically linking technical manuals to digital twin objects reduces labor costs for servicing reactor cells, speeds up the search for emergency response procedures, and provides instant access to operating documentation.
+5.2 Mapping equipment classes to technical documentation
+The comparison of recognized device classes with technical documentation models is carried out through a dictionaryDEVICE_CLASSES V backend/main.py:
+DEVICE_CLASSES = {
+    "abb_relion_615": ("ABB 615 protection relay", "ABB 615"),
+    "relay_front": ("ABB 615 protection relay", "ABB 615"),
+    "relay_rear": ("ABB 615 protection relay", "ABB 615")
+}
+
+All three detection class keys (abb_relion_615, relay_front, relay_rear) are clearly translated into a single target management model"ABB 615".
+Cabinets (tags) are linked to technical documentation via an attributedoc_models:
+Closet H05has pre-installed static links to manual models"UniGear ZS2" And "VD4".
+All other cabinets (H04–H01, WOLF, OT1, TSK1, TSK2, OKK1) have empty documentation lists when initialized and are linked to books either upon receipt of detections or manually via an HTTP requestPATCH /tags/{id}by passing a list of models in the fielddoc_models.
+5.3 Search and citation mechanism in/ask
+The RAG/FTS search mechanism implemented inknowledge/adapter.py(based onscripts/kb_search.py), is executed according to the following algorithm:
+When callingPOST /askan SQL query is generated for the virtual FTS5 tablechunks_ftsknowledge basesdata/knowledge.db.
+Filtering is performed by the equipment model field (d.model = 'ABB 615').
+From the tablechunksRelevant text fragments, document titles, and the hierarchical path to the section are extracted (section_path) and page range (page_start, page_end).
+An array of passages is generated with direct URL links to a PDF file with a page navigation anchor (/documents/{doc_id}/file#page={page_start}).
+An example of a valid endpoint JSON responsePOST /ask:
+{
+  "found": true,
+  "answer": null,
+  "passages": [
+    {
+      "document": "ABB 615 Protection Relay Manual",
+      "doc_id": 2,
+      "section_path": "3. Protection Functions / 3.2 READY LED Status",
+      "page_start": 45,
+      "page_end": 46,
+      "text": "The READY LED indicates the normal operational status of the protection relay. When green, the self-supervision system has not detected any internal faults...",
+      "link": "/documents/2/file#page=45"
+    }
+  ],
+  "note": "Answer is null (no LLM integrated). Found 1 relevant passage in knowledge base."
+}
+
+Response field structurePOST /ask (document, doc_id, section_path, page_start, page_end, text, link) is in full compliance with the REST API contract specification.
+5.4 Final Summary of Specifications
+This technical specification provides a comprehensive guide to the architecture, database schemas, REST API contracts, 2D/3D spatial geometry, and knowledge base subsystem. The server side of the VEO360 platform is fully prepared for industrial implementation, integration testing, and deployment within the target digital twin.
+
+
