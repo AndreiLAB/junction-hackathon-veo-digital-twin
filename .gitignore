@@ -25,3 +25,6 @@ dataset/*.e57
 *.swp
 *.swo
 
+
+# placeholder cabinet images (third-party web images, some watermarked): share via Drive
+assets/
