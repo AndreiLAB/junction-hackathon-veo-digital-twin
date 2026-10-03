@@ -172,6 +172,73 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
         con.commit()
         return tag_out(get_tag_row(tag_id))
 
+    @app.post("/process")
+    async def process_e57_file(file: UploadFile = File(...), high_accuracy: bool = False):
+        """
+        Receives an E57 file, runs the extraction, OCR, object detection, 3D raycasting,
+        and aggregation pipeline, then stores the resulting assets into the database.
+        """
+        temp_path = ROOT / file.filename
+        with open(temp_path, "wb") as f:
+            f.write(await file.read())
+            
+        import sys
+        if str(ROOT) not in sys.path:
+            sys.path.append(str(ROOT))
+            
+        from process_e57 import run_pipeline
+        physical_tags = run_pipeline(str(temp_path), detector_type="mock", high_accuracy=high_accuracy)
+        
+        # Import generated physical tags into database
+        updated, added, devices_added = 0, 0, 0
+        
+        # 1. Add all cubicles first
+        for ptag in [p for p in physical_tags if p.asset_type == "cubicle"]:
+            if con.execute("SELECT 1 FROM tags WHERE id = ?", (ptag.label,)).fetchone():
+                updated += 1
+            else:
+                con.execute("INSERT INTO tags(id, name, created_by) VALUES (?,?,'pipeline')", (ptag.label, ptag.label))
+                added += 1
+                
+            review = ptag.confidence is not None and ptag.confidence < s.conf_min
+            con.execute("UPDATE tags SET x=?, y=?, z=?, confidence=?, sightings=?, needs_review=? WHERE id=?",
+                        (ptag.x, ptag.y, ptag.z, ptag.confidence, ptag.observation_count, int(review), ptag.label))
+        con.commit()
+        
+        # 2. Add equipment and link to nearest cubicle
+        cabinets = con.execute("SELECT * FROM tags WHERE x IS NOT NULL").fetchall()
+        for ptag in [p for p in physical_tags if p.asset_type == "equipment"]:
+            dtype, model = DEVICE_CLASSES.get(ptag.label, ("Unknown", ptag.label))
+            tag_id = None
+            if cabinets:
+                def dist(c):
+                    return math.dist((c["x"], c["y"], c["z"]), (ptag.x, ptag.y, ptag.z))
+                best = min(cabinets, key=dist)
+                if dist(best) <= s.max_assign_dist:
+                    tag_id = best["id"]
+                    
+            con.execute(
+                "INSERT INTO devices(tag_id, class, type, model, confidence, x, y, z, created_by) VALUES (?,?,?,?,?,?,?,?,'pipeline')",
+                (tag_id, ptag.label, dtype, model, ptag.confidence, ptag.x, ptag.y, ptag.z)
+            )
+            devices_added += 1
+                        
+        con.commit()
+        
+        # Clean up temp file
+        try:
+            temp_path.unlink()
+        except:
+            pass
+            
+        return {
+            "message": "E57 Processing Complete", 
+            "physical_tags_found": len(physical_tags), 
+            "cabinets_updated": updated, 
+            "cabinets_added": added,
+            "devices_added": devices_added
+        }
+
     @app.post("/import/cabinets")
     def import_cabinets(items: List[CabinetIn]):
         """Load cabinet positions/confidence from find_labels.py's tags.json. Unknown ids are added."""
