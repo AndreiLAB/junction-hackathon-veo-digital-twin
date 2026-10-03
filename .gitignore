@@ -28,3 +28,5 @@ dataset/*.e57
 
 # placeholder cabinet images (third-party web images, some watermarked): share via Drive
 assets/
+data/veo.db
+.pytest_cache/

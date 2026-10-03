@@ -14,6 +14,11 @@ EMBEDDING_MODEL = "dinov2_vits14"  # Using torch hub for DINOv2
 EMBEDDING_DIM = 384
 EMBEDDING_BATCH_SIZE = 16
 
+# Vision Optimization Configs
+OCR_MAX_SIDE = 1536
+VISION_WORKERS = 2
+OCR_ORT_THREADS = 2
+
 # This allows calibration of which quaternion axis means "camera forward"
 # Expected values can be adjusted based on calibration.
 # Matterport usually uses -Z or +Z for forward, but we will test.

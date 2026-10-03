@@ -73,6 +73,38 @@ def init_db():
         FOREIGN KEY (image_id) REFERENCES images(id)
     );
 
+    CREATE TABLE IF NOT EXISTS detections (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        image_id INTEGER,
+        class_name TEXT,
+        confidence REAL,
+        bbox TEXT,
+        ocr_text TEXT,
+        ocr_conf REAL,
+        FOREIGN KEY (image_id) REFERENCES images(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS assets (
+        asset_id TEXT PRIMARY KEY,
+        cubicle_id TEXT,
+        type TEXT,
+        manufacturer TEXT,
+        model TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS tags (
+        tag_id TEXT PRIMARY KEY,
+        parent_tag_id TEXT,
+        label TEXT,
+        asset_type TEXT,
+        confidence REAL,
+        x REAL,
+        y REAL,
+        z REAL,
+        source_image_id INTEGER,
+        source_scan_id INTEGER
+    );
+
     CREATE INDEX IF NOT EXISTS idx_images_scan_id ON images(scan_id);
     CREATE INDEX IF NOT EXISTS idx_images_guid ON images(guid);
     CREATE INDEX IF NOT EXISTS idx_scans_guid ON scans(guid);

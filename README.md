@@ -140,3 +140,72 @@ python scripts/kb_search.py "READY LED" --model "ABB 615"       # search with ci
 python scripts/kb_eval.py                                       # retrieval test: 11/11 in top 3
 ```
 Library use: `from kb_search import search; search(con, question, k=5, model="ABB 615")` returns chunks with document, section path and page range.
+
+
+---
+
+## Backend API (FastAPI)
+
+Serves one **tag per cabinet** (H05, H04, H03, H02, H01, VLK, OT1, TSK1, TSK2, OKK1) with its devices (e.g. the ABB 615 relay), documents (PDFs from the knowledge base) and picture. The existing viewer (Matterport / VEO360) consumes `GET /tags`; write-back to Matterport/VEO360 is **not implemented** (the API and its write permission are unconfirmed).
+
+### How the model and the backend fit together
+
+```
+skybox images --> model (detect + OCR, offline) --> detections.json --> POST /detections --> tags --> GET /tags --> viewer
+```
+
+- The **model side** reads the skybox images. The **backend never receives or needs them**; it only receives the detection results.
+- Images the backend does accept are optional: the cabinet picture (`PUT /tags/{id}/image`, display only) and the `/detect` stub (a hook for running the model live later).
+- A detection should carry its `position` (x, y, z in scan coordinates). Without it the device is created but left unassigned with `needs_review`. Computing it from pixel + camera pose (`locate()`) is not built yet.
+
+### Run
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.main:app --reload          # from the repo root; docs at http://localhost:8000/docs
+python -m pytest backend/tests -q          # 10 tests
+```
+
+On first start it creates `data/veo.db` and seeds the 10 cabinets (names only: no positions, no confidence, no devices). Nothing is invented; unknown values are `null`.
+
+| Env variable | Default | Meaning |
+|---|---|---|
+| `VEO_DB` | `data/veo.db` | tags + devices (created automatically, git-ignored) |
+| `KNOWLEDGE_DB` | `data/knowledge.db` | manuals database (see "Manuals knowledge base") |
+| `DOCS_DIR` | `docs` | the PDFs |
+| `ASSETS_DIR` | `assets` | images, served under `/assets` (git-ignored, share via Drive) |
+| `VEO_SITE` | `eHouse` | site name in `GET /tags` |
+| `CONF_MIN` | `0.5` | detections below this get `needs_review` |
+| `MAX_ASSIGN_DIST` | `2.0` | metres; a device farther than this from every cabinet stays unassigned (**unverified default**, tune it) |
+
+### Endpoints
+
+| Method and path | Parameters | Returns |
+|---|---|---|
+| `GET /health` | none | status, tag/device counts, whether the knowledge base loaded |
+| `GET /tags` | query `needs_review` (bool), `folder` (str) | `{site, count, tags[]}`; each tag has `id, name, folder, position, confidence, needs_review, image, image_is_placeholder, read_as, sightings, evidence_crop, documents[], devices[]` |
+| `GET /tags/{id}` | path `id` (e.g. `H05`) | one tag, same shape; 404 if unknown |
+| `PATCH /tags/{id}` | JSON `name, x, y, z, needs_review, doc_models` (all optional) | the updated tag |
+| `PUT /tags/{id}/image` | multipart `file` (.jpg/.jpeg/.png/.webp), query `placeholder` (bool, default true) | the updated tag; saved as `assets/context/{id}.<ext>` |
+| `POST /import/cabinets` | JSON list of `{tag, name?, x?, y?, z?, confidence?, sightings?, read_as?, evidence_crop?}` (the format of `synthetic_pipeline/labels_out/tags.json`) | `{updated, added}`; sets cabinet positions |
+| `POST /detect` | multipart `file`, query `image_name` (optional) | **stub**: `{model: "stub", detections: []}`. No model is loaded yet and nothing is faked |
+| `POST /detections` | JSON list of `{image, class, conf, box?, ocr?, ocr_conf?, position?{x,y,z}}` (model output) | `{created[], ignored[]}`; relays become devices attached to the nearest cabinet |
+| `GET /devices` | query `unassigned` (bool) | `{devices[]}` |
+| `GET /documents` | query `model` (str, e.g. `ABB 615`) | `{documents[]}` with `id, title, model, doc_type, doc_number, pages, url` |
+| `GET /documents/{id}` | path `id` (int) | one document |
+| `GET /documents/{id}/file` | path `id` (int) | the PDF (`application/pdf`); open at a page with `#page=N` |
+| `POST /ask` | JSON `{question, tag_id?, model?, k?}` (`k` 1 to 20, default 5) | `{found, answer, passages[], note}`; passages carry `document, section_path, page_start, page_end, text, link`. `answer` is always `null` (no LLM wired in); `found=false` means "not in the manuals" |
+| `GET /assets/...` | static files | images |
+
+**Detection input** (`POST /detections`). `class` is `abb_relion_615` (or `relay_front` / `relay_rear`); `nameplate` is ignored (it is OCR evidence, not a device). `box` is `[x, y, w, h]` in pixels of the **original** image. A detection is flagged `needs_review` (with `review_reasons`) if `conf < CONF_MIN`, if it has no `position`, or if no cabinet is within `MAX_ASSIGN_DIST`. Positions come from the model side (pixel + camera pose); this backend does not compute them yet.
+
+**Documents** are attached by manual model: a relay device gets the ABB 615 manual; a cabinet gets the models listed in its `doc_models`. Only **H05** is pre-linked (UniGear ZS2 + VD4), because that is all VEO's manual H05 tag showed; the other cabinets have none until set with `PATCH /tags/{id}`.
+
+**Storage** is behind `backend/storage.py` (`LocalStorage`: `save`, `exists`, `url`, `find`). A cloud class with the same methods can replace it later without changing the API.
+
+### Not done yet
+- Real detector behind `/detect` (waiting on the trained model).
+- `locate()`: pixel + pose to x, y, z (needs the skybox images and a checked camera convention).
+- Cabinet positions: load Pragati's `tags.json` with `POST /import/cabinets`.
+- Matterport / VEO360 write-back adapters.
+- LLM answer generation for `/ask` (retrieval and citations work).

@@ -1,0 +1,1790 @@
+[
+  {
+    "tag_id": "759dbe33-b108-4d95-a1e6-e01091c9f96c",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -8.9967,
+      "y": 0.0454,
+      "z": 1.0854
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "87228372-0856-4657-ad39-cbb866e2dc8d",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": 0.4113,
+      "y": 66.8557,
+      "z": 2.0134
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "aab27bba-301f-41c1-be28-c678a798a255",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": 43.4403,
+      "y": -0.2671,
+      "z": -0.1948
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "9dfe28b9-9692-495d-9686-b8c0de727d31",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -0.5675,
+      "y": -85.777,
+      "z": -0.6051
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "2ff60253-2a36-498f-afde-052da798f347",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -4.5247,
+      "y": 2.5233,
+      "z": 1.2224
+    },
+    "confidence": 0.95
+  },
+  {
+    "tag_id": "ff9a463a-4bcb-44f9-8684-5a406fd362f5",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.0214,
+      "y": 1.0363,
+      "z": 1.4922
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "868b03a6-89ff-4b00-8cd9-680cef8eef0b",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0843,
+      "y": 2.0256,
+      "z": 1.4928
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "eb938d32-5390-4396-b992-ce4f22ddac94",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": 48.2866,
+      "y": -9.0904,
+      "z": 1.1415
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "cd027013-5120-4341-9763-81feee6701dc",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.706,
+      "y": -7.0875,
+      "z": 1.319
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "a089903c-c707-474c-99ff-78069f6602fd",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.0424,
+      "y": 2.1747,
+      "z": 1.5367
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "c237e490-347f-4c16-8d45-4776b57a03b2",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.1348,
+      "y": 3.0442,
+      "z": 1.5132
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "6bb3af57-22c1-4aee-b440-fb3f8a1fd275",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3292,
+      "y": -1.9552,
+      "z": 2.3703
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "594f9103-8741-443d-8c4d-707da723b0ec",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0786,
+      "y": -0.6552,
+      "z": 1.4297
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "20d2c2d1-f1ad-41fd-9766-865b42780760",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7599,
+      "y": -5.8337,
+      "z": 1.336
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "a1085070-67ba-4393-a8bb-4a13f5beda5d",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7674,
+      "y": -2.5375,
+      "z": 1.4102
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "6084e29c-42ad-41db-8968-92fdbe7c9df1",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7675,
+      "y": -2.5346,
+      "z": 1.3993
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "ec95a3e5-6f00-489f-a50e-92613610e679",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7721,
+      "y": -1.5282,
+      "z": 1.4123
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "a0f0acac-d037-4415-ba56-bb5d58bf304e",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7728,
+      "y": -1.5278,
+      "z": 1.3998
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "2fe2cef9-fbab-4344-adac-5c3f2ba16753",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7791,
+      "y": -1.425,
+      "z": 1.4731
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "30108a8d-3b0d-4b52-bc18-f4fc500ec158",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.5076,
+      "y": 5.0348,
+      "z": 1.585
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "c24cc735-08fd-4b25-b9b3-7afb57c919da",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3224,
+      "y": -1.9517,
+      "z": 2.3713
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "05bf7fe2-8c3f-4b6a-b18a-3be91f702c61",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3154,
+      "y": -2.4909,
+      "z": 1.4393
+    },
+    "confidence": 0.95
+  },
+  {
+    "tag_id": "0eeeeb0f-97ff-4625-be0a-f53d4bf247ed",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.3057,
+      "y": -1.8785,
+      "z": 1.4367
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "4810ecc9-38bd-4f2c-960b-61b4ece5b957",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.0745,
+      "y": -7.0761,
+      "z": 1.3423
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "68af8bfe-88e4-4d56-9e3d-1061f3847649",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7438,
+      "y": -3.5311,
+      "z": 1.4121
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "d29c7343-ea1c-45a4-8181-e3bb77c07c4d",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7438,
+      "y": -3.531,
+      "z": 1.3992
+    },
+    "confidence": 0.75
+  },
+  {
+    "tag_id": "0e46df53-1265-40f9-866a-a6ec7e54f708",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7688,
+      "y": -2.5209,
+      "z": 1.4066
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "24ed61b1-9d2d-48a2-92a9-abdf8a5df015",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7688,
+      "y": -2.5207,
+      "z": 1.3934
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "75330924-805d-4ffe-ab11-3fba271f1ca1",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7755,
+      "y": -1.5142,
+      "z": 1.4039
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "9c3dbfb5-639d-410f-8611-3c21cde5fefa",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7717,
+      "y": -2.1852,
+      "z": 1.4873
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "c0f4a46f-60fa-48fe-8b40-8a93a60e87ce",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.324,
+      "y": -1.9386,
+      "z": 2.3722
+    },
+    "confidence": 0.75
+  },
+  {
+    "tag_id": "59fa0a5a-d7cf-4f3d-a794-cf6c9ef50535",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3165,
+      "y": -2.4772,
+      "z": 1.4409
+    },
+    "confidence": 0.95
+  },
+  {
+    "tag_id": "a9a864b9-cceb-4663-a18d-61f0b5d4e031",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0274,
+      "y": 0.5607,
+      "z": 1.508
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "abb93a90-1b3a-4259-a3f6-54cfeb1c41fe",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -1.9946,
+      "y": -3.5274,
+      "z": 1.4305
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "fff54750-ae1a-4d93-89cc-b9eb59c777c8",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7596,
+      "y": -4.533,
+      "z": 1.4131
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "d436b5d9-7ea1-49ba-9a12-78105bf02535",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.7555,
+      "y": -7.0987,
+      "z": 1.3861
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "9600a0db-d92c-407f-98b4-e15e8c746858",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.724,
+      "y": -4.1357,
+      "z": 1.4394
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "e723b8f4-8fb4-4f76-84e3-2395d388ec76",
+    "parent_tag_id": null,
+    "label": "TSK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7187,
+      "y": -4.874,
+      "z": 1.4862
+    },
+    "confidence": 0.75
+  },
+  {
+    "tag_id": "5a1e7850-21e8-41f5-8cfe-9e02a887332a",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.3912,
+      "y": -7.1371,
+      "z": 1.3818
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "2834377b-642b-4eaf-a29f-1a963b4cc440",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7567,
+      "y": -4.5279,
+      "z": 1.3987
+    },
+    "confidence": 0.8888888888888888
+  },
+  {
+    "tag_id": "ce68ad01-1e80-4b5b-98ea-fb64c1f9e799",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7569,
+      "y": -4.5282,
+      "z": 1.4117
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "01178a4f-b172-48a3-b49b-975ddd682e0f",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7457,
+      "y": -3.5204,
+      "z": 1.4114
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "5cbc931a-7586-4e95-91bd-6988eafaa451",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7686,
+      "y": -4.0484,
+      "z": 1.4834
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "8dae381e-f3c7-4e3a-8fe3-7f478949cf81",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.0399,
+      "y": 4.9862,
+      "z": 1.6468
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "4f63d229-c14f-42da-98bc-8949f8c94e05",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.7213,
+      "y": -4.9491,
+      "z": 1.439
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "c75c21f0-7797-4ce9-b609-3aadd039014b",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7206,
+      "y": -5.7665,
+      "z": 1.5807
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "f005059d-fb76-4f07-a195-0ede864ae443",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7184,
+      "y": -6.5557,
+      "z": 1.4089
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "dd899b3d-e0f4-4d5a-917a-79c5d8528daf",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.168,
+      "y": -7.1184,
+      "z": 1.4008
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "5afc6213-a7d8-4d79-bdc5-ac42f678ae7b",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.76,
+      "y": -4.5164,
+      "z": 1.3987
+    },
+    "confidence": 0.8
+  },
+  {
+    "tag_id": "8d34717a-bd9c-4a45-a685-1db4513cd93c",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.76,
+      "y": -4.5187,
+      "z": 1.4116
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "61f5e5a7-28e8-41cf-b470-5a8755f8b80c",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.798,
+      "y": -5.1247,
+      "z": 1.4789
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "1c69c547-f19d-44d0-9913-3a2a0d09e445",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.8564,
+      "y": 4.9927,
+      "z": 1.6595
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "b947bb9d-0e50-4e2b-8455-8a093ebed464",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7257,
+      "y": -5.7621,
+      "z": 1.582
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "f2a91783-56c6-4e69-9197-5e42443b0de3",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.7599,
+      "y": -5.853,
+      "z": 1.439
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "87e13d9e-b49b-4b70-b9f3-1dc4d6167a47",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.317,
+      "y": -7.1151,
+      "z": 1.4166
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "d4742c54-e834-46e6-b07d-c33af37caf5a",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7593,
+      "y": -4.5133,
+      "z": 1.4048
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "4f6ed5c3-1d4b-4464-8318-48d51e2d37b5",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7575,
+      "y": -5.8321,
+      "z": 1.4785
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "bb210cd8-dc0d-46fc-881c-1d54f7b0bbb2",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.2285,
+      "y": 5.052,
+      "z": 1.7018
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "21cf7783-1791-46d3-82e2-95d1224a88b0",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7201,
+      "y": -6.5541,
+      "z": 1.419
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "0d4ce8aa-ab7f-4266-8497-6ba83ba97d95",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.7202,
+      "y": -6.5673,
+      "z": 1.4378
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "1f5d01a2-04fa-44b3-864e-3f4444eaf69f",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -3.2287,
+      "y": -7.0948,
+      "z": 1.4337
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "1b867431-ac48-4900-9344-fe634266fef8",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7528,
+      "y": -5.6193,
+      "z": 1.4117
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "043ec740-57bf-42f9-ab94-3adc32382924",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -6.7772,
+      "y": -7.1251,
+      "z": 1.4885
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "8f775622-31be-4581-a571-20905ce4821d",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7217,
+      "y": -5.7608,
+      "z": 1.5839
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "795471ff-ffaa-4920-8abd-a756b665b217",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.8359,
+      "y": 5.0436,
+      "z": 1.7369
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "9504c091-b985-420d-a6d3-ebf679450f2a",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.006,
+      "y": -6.3729,
+      "z": 1.3961
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "3d360fb9-7893-42d6-9d3b-dc79daca02f6",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3256,
+      "y": -1.9513,
+      "z": 2.3426
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "db72a5c9-2097-4fec-ad1d-00d0aa662455",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7491,
+      "y": -5.6154,
+      "z": 1.4192
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "cc0c8888-dd09-40c3-8df2-af4a78032676",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7489,
+      "y": -5.6145,
+      "z": 1.4066
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "4e436805-1b87-4574-9380-79291c18ba81",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.5499,
+      "y": 2.3031,
+      "z": 1.3268
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "1dadcc92-8d0b-404a-83c1-33be065ca2bf",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7073,
+      "y": -6.5623,
+      "z": 1.4165
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "aa4ea211-9cbc-4afe-98ec-351cca32e958",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7238,
+      "y": -5.7682,
+      "z": 1.5765
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "56eef9a9-1d42-4da5-9678-39dd8c81f5bf",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7072,
+      "y": -6.5745,
+      "z": 1.4127
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "1ace5551-73c7-46d5-bc18-39c3c2f1c300",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.7046,
+      "y": -6.7178,
+      "z": 1.4838
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "86929221-5d68-4e06-a31d-f76217390632",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.0591,
+      "y": -7.1012,
+      "z": 1.4585
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "98c5c366-a66a-4ed9-83e0-c09a71ca1665",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7525,
+      "y": -5.6172,
+      "z": 1.4097
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "2333be73-70a7-4f9e-b05b-ad33401f1d90",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.751,
+      "y": -5.6173,
+      "z": 1.3973
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "0905f2dc-a50d-47a3-a272-caa348fc2af0",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7562,
+      "y": -5.5563,
+      "z": 1.432
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "c3172d06-a5a2-4720-9a55-a532e8ed1598",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3399,
+      "y": -1.9501,
+      "z": 2.3354
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "c81b51f1-61d3-4b72-a021-0adff5616f74",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7518,
+      "y": -4.5172,
+      "z": 1.4076
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "c28d5025-1513-449b-9802-4b7cbfd5ca69",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7503,
+      "y": -4.5341,
+      "z": 1.3958
+    },
+    "confidence": 0.9444444444444444
+  },
+  {
+    "tag_id": "c1a1e116-3e5e-4ee3-be40-697aae26b38c",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.9765,
+      "y": 2.3161,
+      "z": 1.282
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "23c0317f-9d7d-493c-84cd-7e36cd3dab7b",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7174,
+      "y": -5.7677,
+      "z": 1.572
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "697043d6-7801-4173-b2fa-4cf8da8d68c8",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7174,
+      "y": -5.7717,
+      "z": 1.5721
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "d5d79ef3-c3e2-45c8-8d8d-6b078fe98b1a",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.7057,
+      "y": -5.5804,
+      "z": 1.4786
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "d003d753-2b91-411f-a26a-230c4e1a9106",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.6689,
+      "y": -6.3146,
+      "z": 1.0461
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "10f29d74-65ed-4731-9d72-e7df689a9c57",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.0543,
+      "y": -7.1362,
+      "z": 1.4751
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "aaa3dacb-e431-43ca-8911-7dec2bc97582",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7454,
+      "y": -4.5141,
+      "z": 1.4093
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "03198340-08c8-4bc7-a3ba-52c1d38e0e9c",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7466,
+      "y": -4.5144,
+      "z": 1.3978
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "ff06d192-ae6d-4598-b50a-62259a3e5368",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7485,
+      "y": -4.4495,
+      "z": 1.4307
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "86316ef1-f7fb-423f-a589-d33da0d3abac",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3348,
+      "y": -1.935,
+      "z": 2.3549
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "f8b79e30-b8f5-4373-8ee8-a2d79c0e5542",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7347,
+      "y": -3.5151,
+      "z": 1.409
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "6f1bf7fb-7fb3-4c6f-ba8f-0a96d805fc0b",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.735,
+      "y": -3.5162,
+      "z": 1.3965
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "00dae12d-2014-4178-8ba4-dfaf51f9450e",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.7066,
+      "y": 2.3022,
+      "z": 1.3038
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "b7985946-dba6-492e-a0d3-012bffbf3c7a",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7167,
+      "y": -5.7631,
+      "z": 1.5772
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "aec4c10c-311c-4133-807f-1eb44db3d0cd",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7238,
+      "y": -6.5455,
+      "z": 1.4091
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "fd5361cb-424c-4ebc-ba21-14c4e61491c7",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.717,
+      "y": -5.7662,
+      "z": 1.5772
+    },
+    "confidence": 0.8
+  },
+  {
+    "tag_id": "ba6240fa-927e-4564-9194-3a249aee230c",
+    "parent_tag_id": null,
+    "label": "VLK",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7238,
+      "y": -6.5613,
+      "z": 1.4091
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "708468cf-f365-49b4-a946-4ce8b2e88d22",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.6996,
+      "y": -4.5893,
+      "z": 1.4813
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "ad52b050-dcda-4663-98ab-833a0c5cfc26",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7454,
+      "y": -5.6235,
+      "z": 1.4084
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "1253798d-3b82-4d7b-a6af-1e666f07f2b6",
+    "parent_tag_id": null,
+    "label": "H01",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7442,
+      "y": -5.6233,
+      "z": 1.3954
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "0e95b977-a1b5-43b9-80d4-d6611bdb8022",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.1423,
+      "y": -7.1166,
+      "z": 1.4966
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "d2e25c58-1cd3-478d-ac83-cd7ddec556dc",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7396,
+      "y": -3.5203,
+      "z": 1.4062
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "cbe2764b-3413-4475-a54d-c7f0365d9ccd",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7388,
+      "y": -3.5206,
+      "z": 1.3936
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "4b23f20a-4e29-4744-84c7-a94c57b5504d",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7416,
+      "y": -3.4488,
+      "z": 1.4266
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "dae4f46c-6fb2-4a79-a30d-34cde5556b7d",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7562,
+      "y": -2.517,
+      "z": 1.4036
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "e5659a57-4bba-4307-890f-3394f76310bb",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7576,
+      "y": -2.513,
+      "z": 1.391
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "f99be154-a44c-461d-b25d-f998611add3f",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.757,
+      "y": 2.3162,
+      "z": 1.3039
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "120b36c5-e11e-4978-8850-9a17c1f88bac",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3353,
+      "y": -1.9418,
+      "z": 2.3546
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "3d0fd85b-68c1-4960-ad01-ad3bbc7bd2ad",
+    "parent_tag_id": null,
+    "label": "OT1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7307,
+      "y": -5.7657,
+      "z": 1.5764
+    },
+    "confidence": 0.6666666666666666
+  },
+  {
+    "tag_id": "d3b0ea09-819e-4301-b7bb-6ec78a5a4649",
+    "parent_tag_id": null,
+    "label": "TSK2",
+    "type": "cubicle",
+    "position": {
+      "x": -2.7173,
+      "y": -4.1093,
+      "z": 1.5423
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "e842bfe7-4ba4-4fe1-b18f-b2a3b777633f",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -1.9977,
+      "y": -3.6264,
+      "z": 1.4978
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "b60edefc-0c06-4b1b-82f0-96feda2a6728",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7525,
+      "y": -4.5277,
+      "z": 1.405
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "473da11d-cb78-42e9-ba6d-51362f0a5976",
+    "parent_tag_id": null,
+    "label": "H02",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7516,
+      "y": -4.5167,
+      "z": 1.394
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "5136401e-944a-4e55-b9e0-d6e4f366761e",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.2082,
+      "y": -7.1151,
+      "z": 1.5253
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "628d6c90-a6ca-4119-8a6a-12841592b0f1",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7571,
+      "y": -2.5175,
+      "z": 1.407
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "ad07c82f-8b3a-4037-b02f-814b998dde2c",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7582,
+      "y": -2.5172,
+      "z": 1.3948
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "1b92ba28-4b81-4bb1-a0f1-306712806175",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7595,
+      "y": -2.494,
+      "z": 1.4284
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "42c92546-5306-48d0-97de-536b3a5c548e",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.761,
+      "y": -1.5209,
+      "z": 1.4076
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "01766ad5-05e4-41d5-bf3a-46f2193cc8e4",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7602,
+      "y": -1.52,
+      "z": 1.3951
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "54273a40-9927-472a-9aa2-7e9569686360",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.2036,
+      "y": 2.3122,
+      "z": 1.3455
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "5d772eab-0fbe-4a44-ae59-51861b6af05e",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3279,
+      "y": -1.9486,
+      "z": 2.3512
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "f85b9a40-4ab7-4459-b1d1-572a926cdd42",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.3059,
+      "y": -2.3729,
+      "z": 1.4861
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "6784b967-7b5e-4a0c-8753-771fad923ae7",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7379,
+      "y": -3.5204,
+      "z": 1.4078
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "bf4ebdcb-7ec6-4f7b-b5d5-e96a7a26e43f",
+    "parent_tag_id": null,
+    "label": "H03",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7379,
+      "y": -3.521,
+      "z": 1.3956
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "954f027b-d8cc-43db-8d71-9e6bcb87e025",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.8777,
+      "y": -7.0815,
+      "z": 1.5322
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "49ac7e17-550c-4477-beac-87d8249a848a",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7582,
+      "y": -1.5193,
+      "z": 1.4084
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "ae61b8a7-9555-437f-a0a1-70ecfbf6818f",
+    "parent_tag_id": null,
+    "label": "H05",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7606,
+      "y": -1.5189,
+      "z": 1.3952
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "775eb545-b0f4-424d-8a44-8cd9cd59fab7",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.7586,
+      "y": -1.4902,
+      "z": 1.423
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "cc3f308a-8ba9-48c4-8379-a9bc1eb1ad6a",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.0712,
+      "y": 2.3237,
+      "z": 1.3745
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "4247ceeb-c014-494c-b8a0-a6646e894f49",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.327,
+      "y": -1.9536,
+      "z": 2.356
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "00760388-a991-4be5-9380-a2dd9bf1f0b7",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0191,
+      "y": -1.4056,
+      "z": 1.4885
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "0515080e-2508-4252-884b-a775b8debde5",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7612,
+      "y": -2.5266,
+      "z": 1.4036
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "38134184-53ad-49a1-b43e-b1c97429bf13",
+    "parent_tag_id": null,
+    "label": "H04",
+    "type": "cubicle",
+    "position": {
+      "x": -5.7609,
+      "y": -2.5257,
+      "z": 1.3921
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "86e18fbd-e3b4-472a-8d53-9d074968ab65",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.8324,
+      "y": -7.0993,
+      "z": 1.5375
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "ac6bafd1-4de4-4c00-9c5a-70349d4c4185",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.0338,
+      "y": -0.243,
+      "z": 1.3684
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "e1de24e6-0122-4838-9ce4-943ea4df2de7",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -5.1346,
+      "y": 2.332,
+      "z": 1.3985
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "bf58b809-5f04-4348-ae69-a0de7d440f34",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3321,
+      "y": -1.9521,
+      "z": 2.3553
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "699aa94c-487b-4e71-be91-681024691f2c",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": 44.5546,
+      "y": 1.8253,
+      "z": 2.3741
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "6e156f92-6d0d-4fed-abb2-2cb9fa69cce9",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -4.7726,
+      "y": -7.0919,
+      "z": 1.5601
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "6af88764-15ba-4448-8a73-72798f6c4aca",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.0504,
+      "y": -0.5211,
+      "z": 1.4002
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "580dea62-359b-4921-aa37-242d2b93d5db",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -7.7919,
+      "y": 5.0131,
+      "z": 1.3596
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "3fd486eb-d210-4ce8-9244-7e378507acdc",
+    "parent_tag_id": null,
+    "label": "OKK1",
+    "type": "cubicle",
+    "position": {
+      "x": -2.3354,
+      "y": -1.9492,
+      "z": 2.3443
+    },
+    "confidence": 1.0
+  },
+  {
+    "tag_id": "968c1c9d-dab8-4932-832b-0dda69e62625",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0519,
+      "y": 0.6443,
+      "z": 1.528
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "1c789874-828e-4b75-b7ba-391c291dfc99",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -6.7972,
+      "y": -0.9709,
+      "z": 1.4512
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "9f6ed1a2-861f-4335-b32c-8a79feb73cd5",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -9.0322,
+      "y": -0.2262,
+      "z": 1.4473
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "9fd2bcbc-2b8d-4065-b069-8548067931a3",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -8.2479,
+      "y": 5.0094,
+      "z": 1.3409
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "340eefe0-7088-4193-b6b4-f0e66eb0ff4d",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -2.0749,
+      "y": -0.6205,
+      "z": 1.4872
+    },
+    "confidence": 0.92
+  },
+  {
+    "tag_id": "5ede13e2-2ac0-410d-840f-0c9c17a1d326",
+    "parent_tag_id": null,
+    "label": "abb_relion_615",
+    "type": "equipment",
+    "position": {
+      "x": -8.9224,
+      "y": -7.0558,
+      "z": 1.5907
+    },
+    "confidence": 0.92
+  }
+]
