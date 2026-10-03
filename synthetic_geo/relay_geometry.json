@@ -1,0 +1,53 @@
+{
+ "relay": {
+  "model": "ABB REX615 (wide case)",
+  "frame_width_m": 0.262,
+  "frame_height_m": 0.177,
+  "source": "REX615 technical manual, Technical data: wide case frame 262 mm x 177 mm (4U); the reference render has aspect 1.49 = 262/177",
+  "front_plane_toward_corridor_m": 0.07,
+  "body_depth_m": 0.07,
+  "geometry_note": "front plane 0.07 m in front of the door plane reproduces the apparent width measured in img_067 (~290 mm at the nameplate depth)"
+ },
+ "relay_offset_from_nameplate_m": {
+  "H02": {
+   "dy": -0.271,
+   "dz": 0.451
+  },
+  "H03": {
+   "dy": -0.271,
+   "dz": 0.451
+  },
+  "H04": {
+   "dy": -0.271,
+   "dz": 0.451
+  },
+  "H05": {
+   "dy": -0.271,
+   "dz": 0.451
+  },
+  "H01": {
+   "dy": 0.0,
+   "dz": 0.55
+  }
+ },
+ "relay_offset_source": "H02-H05: read from img_067 and confirmed by eye on H03/H04/H05 at 0.7 m and H03 at 2.0 m. H01: read from img_061 only (less certain: its nameplate position has fewer observations).",
+ "other_hmi": {
+  "model": "Cerdex display (TSK1/TSK2, ELCON cabinets)",
+  "width_m": 0.157,
+  "height_m": 0.095,
+  "TSK1": {
+   "y": -5.119,
+   "z": 1.563
+  },
+  "TSK2": {
+   "y": -4.318,
+   "z": 1.565
+  },
+  "source": "measured from img_037 (TSK1) and img_031 (TSK2); centres 0.80 m apart; verified by projection into 14 of 16 other views"
+ },
+ "camera_corridor_x_range_m": [
+  -5.5,
+  -2.3
+ ],
+ "camera_corridor_note": "cameras outside this range (scan 1 at the origin, scans 17-18) look through walls/doors at the cabinets; excluded"
+}
