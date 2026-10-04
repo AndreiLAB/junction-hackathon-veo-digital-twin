@@ -93,7 +93,13 @@ export function CabinetCard({
           </span>
           <span className="inline-flex items-center gap-1">
             <FileText className="h-3.5 w-3.5" />
-            {tag.documents.length} documents
+            {(() => {
+              const deviceDocs = tag.devices.flatMap((d) => d.documents);
+              const allDocs = [...tag.documents, ...deviceDocs];
+              const uniqueDocs = new Set(allDocs.map((d) => d.id));
+              return uniqueDocs.size;
+            })()}{" "}
+            documents
           </span>
           {view && (
             <span>

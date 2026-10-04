@@ -30,7 +30,7 @@ DEVICE_CLASSES = {
     "vd4_breaker_window": ("VD4 circuit breaker", "VD4"),
 }
 # the cabinet itself: not a device, but evidence for the cabinet tag (panel_model, source, confidence)
-PANEL_CLASS, PANEL_MODEL = "unigear_zs2_panel", "UniGear ZS2"
+PANEL_CLASS, PANEL_MODEL = "unigear_panel", "UniGear ZS2"
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 
 
