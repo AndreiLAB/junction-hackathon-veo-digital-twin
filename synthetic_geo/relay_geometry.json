@@ -26,11 +26,11 @@
    "dz": 0.451
   },
   "H01": {
-   "dy": 0.0,
+   "dy": -0.07,
    "dz": 0.55
   }
  },
- "relay_offset_source": "H02-H05: read from img_067 and confirmed by eye on H03/H04/H05 at 0.7 m and H03 at 2.0 m. H01: read from img_061 only (less certain: its nameplate position has fewer observations).",
+ "relay_offset_source": "H02-H05 (-0.271, +0.451): read from img_067, confirmed by eye on H03/H04/H05 at 0.7 m and H03 at 2.0 m, and on the verification sheet (img_033, 052, 025, 045). H01: dy -0.07 (+-0.05), dz +0.55. UPDATED from dy 0.0: H01's nameplate is 0.173 m LEFT of its panel centre (the others are within 0.03 m), and two photos bracket the relay (img_061 suggests dy -0.04, img_045 suggests -0.09). Still the least certain.",
  "other_hmi": {
   "model": "Cerdex display (TSK1/TSK2, ELCON cabinets)",
   "width_m": 0.157,
@@ -49,5 +49,69 @@
   -5.5,
   -2.3
  ],
- "camera_corridor_note": "cameras outside this range (scan 1 at the origin, scans 17-18) look through walls/doors at the cabinets; excluded"
+ "camera_corridor_note": "cameras outside this range (scan 1 at the origin, scans 17-18) look through walls/doors at the cabinets; excluded",
+ "unigear_panel": {
+  "class": "unigear_zs2_panel",
+  "model": "UniGear ZS2 (36 kV variant ASSUMED: the supplied manual Rev 02 is the 36 kV one; not confirmed for this site, mentors cannot be asked)",
+  "plane": "x = cabinet x (the lower-door plane); door normal +x for H01-H05",
+  "z_min": 0.046,
+  "z_max": 2.331,
+  "height_m": 2.285,
+  "y_ranges": {
+   "H01": [
+    -6.165,
+    -5.053
+   ],
+   "H02": [
+    -5.053,
+    -4.025
+   ],
+   "H03": [
+    -4.025,
+    -3.021
+   ],
+   "H04": [
+    -3.021,
+    -2.037
+   ],
+   "H05": [
+    -2.037,
+    -1.032
+   ]
+  },
+  "widths_m": {
+   "H01": 1.112,
+   "H02": 1.028,
+   "H03": 1.004,
+   "H04": 0.984,
+   "H05": 1.005
+  },
+  "notes": "Measured from img_033 (H01-H04 seams and top/bottom edges, back-projected onto the door plane). H05's left seam measured, width = mean of H02-H04 (1.005 m). H01 is wider (1.11 m). Panel nameplates sit within 0.03 m of the panel centre except H01 (-0.17 m). Verified: the projected rectangles match the real panel edges in img_033, 052, 025 and 045 (near, far/oblique).",
+  "label_scale_note": "A panel is 2.29 x 1.0 m: it does not fit a 1280 native-resolution tile unless the camera is far. Train/infer this class on the FULL FACE downscaled to 1280 (scale 0.3125), not on native tiles."
+ },
+ "vd4_breaker_window": {
+  "class": "vd4_breaker_window",
+  "asset": "VD4 circuit breaker, seen through the window marked 'VD4' on the lower door",
+  "manual_model": "VD4",
+  "size_m": {
+   "w": 0.147,
+   "h": 0.124
+  },
+  "offset_from_nameplate_m": {
+   "dy": 0.074,
+   "dz": -0.273
+  },
+  "present_on": [
+   "H02",
+   "H04",
+   "H05"
+  ],
+  "absent_on": {
+   "H03": "a warning triangle is at the window position (different panel type)"
+  },
+  "unmeasured": {
+   "H01": "its window is at a different position (see img_045); measure it"
+  },
+  "source": "read from img_067 (H02); the projected box matches the window on H02, H04, H05 in img_033, 025, 045, 052. Small: ~120 px wide at 2.4 m in a 4096 photo, so use native-resolution tiles."
+ }
 }

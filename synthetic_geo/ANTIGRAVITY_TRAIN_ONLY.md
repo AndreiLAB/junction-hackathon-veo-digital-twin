@@ -21,6 +21,7 @@ Ask the user for the paths; do not guess.
 Read `synthetic_geo/DATASET_CARD.md` (also inside the dataset zip). In short: real ABB relays on cabinet **OT1** (and probably VLK/OKK1) are **unlabelled** in the tiles, which is systematic label noise.
 **Do the remedy in section 4 of that card (measure those relays, extend the geometry, regenerate the whole dataset as v2) before the final training run**, and train v1 only as a baseline for comparison,
 unless the user tells you otherwise. Report v1 vs v2 on the real held-out photos.
+**v2 also adds the other assets on the cabinet** (UniGear panel, VD4 breaker window, Cerdex display as a real asset): see `DATASET_CARD.md` section 6 and `ANTIGRAVITY_PROMPT.md` section 5b for the geometry, the two-scale rule for the panel (full face downscaled to 1280) and the identification rule. Extend `export_detections.py` for the new classes.
 
 ## 2. Step 1: validate the dataset (mandatory, before any training)
 Write `synthetic_geo/check_dataset.py` and run it. It must: count images/labels per split and per class; fail if an image has no label file, a label has a class other than 0/1,

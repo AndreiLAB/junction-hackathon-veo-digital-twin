@@ -11,13 +11,33 @@
    },
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": "UniGear ZS2",
-   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (36 kV variant assumed; confirmed only for H05 by VEO's manual tag). To be replaced by detection evidence (class unigear_zs2_panel + 'UniGear' text on the door)",
    "expects_relay": true,
    "document_models": [
     "UniGear ZS2",
     "VD4"
    ],
-   "images": true
+   "images": true,
+   "assets": [
+    {
+     "asset": "UniGear ZS2 panel",
+     "class": "unigear_zs2_panel",
+     "manual_model": "UniGear ZS2",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "ABB REX615 relay",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured (uncertain)"
+    },
+    {
+     "asset": "VD4 breaker (window)",
+     "class": "vd4_breaker_window",
+     "manual_model": "VD4",
+     "status": "present at another position, unmeasured"
+    }
+   ]
   },
   "H02": {
    "name": "H02 - STATION TRANSFORMER",
@@ -28,13 +48,33 @@
    },
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": "UniGear ZS2",
-   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (36 kV variant assumed; confirmed only for H05 by VEO's manual tag). To be replaced by detection evidence (class unigear_zs2_panel + 'UniGear' text on the door)",
    "expects_relay": true,
    "document_models": [
     "UniGear ZS2",
     "VD4"
    ],
-   "images": true
+   "images": true,
+   "assets": [
+    {
+     "asset": "UniGear ZS2 panel",
+     "class": "unigear_zs2_panel",
+     "manual_model": "UniGear ZS2",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "ABB REX615 relay",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "VD4 breaker (window)",
+     "class": "vd4_breaker_window",
+     "manual_model": "VD4",
+     "status": "geometry measured"
+    }
+   ]
   },
   "H03": {
    "name": "H03 - METERING",
@@ -45,13 +85,33 @@
    },
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": "UniGear ZS2",
-   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (36 kV variant assumed; confirmed only for H05 by VEO's manual tag). To be replaced by detection evidence (class unigear_zs2_panel + 'UniGear' text on the door)",
    "expects_relay": true,
    "document_models": [
     "UniGear ZS2",
     "VD4"
    ],
-   "images": true
+   "images": true,
+   "assets": [
+    {
+     "asset": "UniGear ZS2 panel",
+     "class": "unigear_zs2_panel",
+     "manual_model": "UniGear ZS2",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "ABB REX615 relay",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "VD4 breaker (window)",
+     "class": "vd4_breaker_window",
+     "manual_model": "VD4",
+     "status": "NOT PRESENT: warning triangle at that position"
+    }
+   ]
   },
   "H04": {
    "name": "H04 - SOLAR 1",
@@ -62,13 +122,33 @@
    },
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": "UniGear ZS2",
-   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (36 kV variant assumed; confirmed only for H05 by VEO's manual tag). To be replaced by detection evidence (class unigear_zs2_panel + 'UniGear' text on the door)",
    "expects_relay": true,
    "document_models": [
     "UniGear ZS2",
     "VD4"
    ],
-   "images": true
+   "images": true,
+   "assets": [
+    {
+     "asset": "UniGear ZS2 panel",
+     "class": "unigear_zs2_panel",
+     "manual_model": "UniGear ZS2",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "ABB REX615 relay",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "VD4 breaker (window)",
+     "class": "vd4_breaker_window",
+     "manual_model": "VD4",
+     "status": "geometry measured"
+    }
+   ]
   },
   "H05": {
    "name": "H05 - SOLAR 2",
@@ -79,13 +159,33 @@
    },
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": "UniGear ZS2",
-   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (confirmed only for H05 by VEO's manual tag)",
+   "panel_model_source": "assumed rule H01-H05 = UniGear ZS2 (36 kV variant assumed; confirmed only for H05 by VEO's manual tag). To be replaced by detection evidence (class unigear_zs2_panel + 'UniGear' text on the door)",
    "expects_relay": true,
    "document_models": [
     "UniGear ZS2",
     "VD4"
    ],
-   "images": true
+   "images": true,
+   "assets": [
+    {
+     "asset": "UniGear ZS2 panel",
+     "class": "unigear_zs2_panel",
+     "manual_model": "UniGear ZS2",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "ABB REX615 relay",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured"
+    },
+    {
+     "asset": "VD4 breaker (window)",
+     "class": "vd4_breaker_window",
+     "manual_model": "VD4",
+     "status": "geometry measured"
+    }
+   ]
   },
   "VLK": {
    "name": "VLK",
@@ -99,7 +199,8 @@
    "panel_model_source": null,
    "expects_relay": false,
    "document_models": [],
-   "images": false
+   "images": false,
+   "assets": []
   },
   "OT1": {
    "name": "OT1",
@@ -113,7 +214,15 @@
    "panel_model_source": null,
    "expects_relay": false,
    "document_models": [],
-   "images": false
+   "images": false,
+   "assets": [
+    {
+     "asset": "ABB relays (2, 615 series assumed from the front panel)",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "offsets measured once from img_032: A (dy -0.188, dz +0.166), B (dy -0.213, dz -0.152); size not measured; UNLABELLED in dataset v1"
+    }
+   ]
   },
   "TSK1": {
    "name": "TSK1",
@@ -127,7 +236,15 @@
    "panel_model_source": null,
    "expects_relay": false,
    "document_models": [],
-   "images": false
+   "images": false,
+   "assets": [
+    {
+     "asset": "Cerdex HP HMI display",
+     "class": "other_hmi",
+     "manual_model": null,
+     "status": "geometry measured; no manual available"
+    }
+   ]
   },
   "TSK2": {
    "name": "TSK2",
@@ -141,7 +258,15 @@
    "panel_model_source": null,
    "expects_relay": false,
    "document_models": [],
-   "images": false
+   "images": false,
+   "assets": [
+    {
+     "asset": "Cerdex HP HMI display",
+     "class": "other_hmi",
+     "manual_model": null,
+     "status": "geometry measured; no manual available"
+    }
+   ]
   },
   "OKK1": {
    "name": "OKK1",
@@ -155,7 +280,8 @@
    "panel_model_source": null,
    "expects_relay": false,
    "document_models": [],
-   "images": false
+   "images": false,
+   "assets": []
   }
  }
 }

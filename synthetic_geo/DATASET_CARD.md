@@ -53,3 +53,10 @@ Validated: every image has a label file; all class ids are 0/1; all coordinates 
 
 ## 5. Rules
 No images, datasets, secrets or weights > 50 MB in git. Never invent boxes or metrics. State that everything comes from one site.
+
+## 6. v2 scope additions (decided after v1 was shipped): detect the OTHER assets, identify the UniGear cabinet
+The mentors require the technique to detect other assets on the cabinet, and the UniGear panel itself must be identified. v2 therefore has four classes:
+`0 abb_relion_615, 1 other_hmi (Cerdex, now a real asset), 2 unigear_zs2_panel, 3 vd4_breaker_window`. Full geometry, per-cabinet presence (VD4 window absent on H03, unmeasured on H01), the two-scale rule for the panel
+(full face downscaled to 1280, not native tiles) and the identification rule are in `ANTIGRAVITY_PROMPT.md` section 5b, with the numbers in `relay_geometry.json` and `cabinet_registry.json` (`assets` per cabinet).
+Panel and VD4-window labels come from geometry on REAL photos (nothing synthetic is inserted for them). Assumption: **36 kV UniGear** (the supplied manual is the 36 kV one); keep it flagged as assumed.
+Also updated since v1: **H01's relay offset is dy -0.07** (was 0.0): its nameplate is 0.17 m left of the panel centre.
