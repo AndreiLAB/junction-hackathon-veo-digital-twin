@@ -2,7 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FileText, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api, apiRaw, dash, num, pct, useApi, type Doc, type Tag } from "@/lib/api";
@@ -14,7 +20,9 @@ import { ErrorState } from "./States";
 export function TagDrawer({ tag, onClose }: { tag: Tag | null; onClose: () => void }) {
   return (
     <Sheet open={!!tag} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-xl">{tag && <DrawerBody initial={tag} />}</SheetContent>
+      <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
+        {tag && <DrawerBody initial={tag} />}
+      </SheetContent>
     </Sheet>
   );
 }
@@ -24,14 +32,21 @@ function DrawerBody({ initial }: { initial: Tag }) {
   const qc = useQueryClient();
   const [doc, setDoc] = useState<Doc | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const q = useQuery({ queryKey: ["tag", base, initial.id], queryFn: () => api<Tag>(base, `/tags/${encodeURIComponent(initial.id)}`), placeholderData: initial });
+  const q = useQuery({
+    queryKey: ["tag", base, initial.id],
+    queryFn: () => api<Tag>(base, `/tags/${encodeURIComponent(initial.id)}`),
+    placeholderData: initial,
+  });
   const tag = q.data ?? initial;
 
   const replace = useMutation({
     mutationFn: async (file: File) => {
       const fd = new FormData();
       fd.append("file", file);
-      await apiRaw(base, `/tags/${encodeURIComponent(tag.id)}/image?placeholder=false`, { method: "PUT", body: fd });
+      await apiRaw(base, `/tags/${encodeURIComponent(tag.id)}/image?placeholder=false`, {
+        method: "PUT",
+        body: fd,
+      });
     },
     onSuccess: () => {
       toast.success("Picture replaced");
@@ -50,8 +65,19 @@ function DrawerBody({ initial }: { initial: Tag }) {
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       <TagImage tag={tag} className="aspect-[4/3] rounded-lg" />
       <div>
-        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && replace.mutate(e.target.files[0])} />
-        <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={replace.isPending}>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && replace.mutate(e.target.files[0])}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fileRef.current?.click()}
+          disabled={replace.isPending}
+        >
           <Upload className="h-4 w-4" /> {replace.isPending ? "Uploading…" : "Replace picture"}
         </Button>
       </div>
@@ -61,7 +87,11 @@ function DrawerBody({ initial }: { initial: Tag }) {
         <Field k="Confidence" v={pct(tag.confidence)} />
         <Field k="Found by E57" v={tag.found_by_e57 ? "Yes" : "No"} />
         <div className="col-span-full flex flex-wrap gap-1.5">
-          <PanelChip model={tag.panel_model} source={tag.panel_source} confidence={tag.panel_confidence} />
+          <PanelChip
+            model={tag.panel_model}
+            source={tag.panel_source}
+            confidence={tag.panel_confidence}
+          />
           {tag.needs_review && <Chip variant="review">needs review</Chip>}
         </div>
       </dl>
@@ -75,14 +105,19 @@ function DrawerBody({ initial }: { initial: Tag }) {
             {tag.devices.map((d) => (
               <li key={d.id} className="rounded-lg border p-3 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">{dash(d.type)} <span className="font-mono text-xs text-muted-foreground">{dash(d.class)}</span></span>
+                  <span className="font-medium">
+                    {dash(d.type)}{" "}
+                    <span className="font-mono text-xs text-muted-foreground">{dash(d.class)}</span>
+                  </span>
                   <span className="flex gap-1.5">
                     <Chip variant="detected">{pct(d.confidence)}</Chip>
                     {d.needs_review && <Chip variant="review">needs review</Chip>}
                   </span>
                 </div>
                 {d.model && <p className="mt-1 text-xs text-muted-foreground">{d.model}</p>}
-                {d.review_reasons.length > 0 && <p className="mt-1 text-xs text-destructive">{d.review_reasons.join(" · ")}</p>}
+                {d.review_reasons.length > 0 && (
+                  <p className="mt-1 text-xs text-destructive">{d.review_reasons.join(" · ")}</p>
+                )}
                 {d.documents.length > 0 && <DocList docs={d.documents} onOpen={setDoc} />}
               </li>
             ))}
@@ -92,12 +127,22 @@ function DrawerBody({ initial }: { initial: Tag }) {
 
       <section>
         <h3 className="label-mono">Documents ({tag.documents.length})</h3>
-        {tag.documents.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">No documents linked</p> : <DocList docs={tag.documents} onOpen={setDoc} />}
+        {tag.documents.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">No documents linked</p>
+        ) : (
+          <DocList docs={tag.documents} onOpen={setDoc} />
+        )}
       </section>
 
       <section>
         <h3 className="label-mono">Ask the manuals</h3>
-        <Input className="mt-2" disabled value="" placeholder="Available after the assets of this cabinet are detected" aria-label="Ask the manuals (not available yet)" />
+        <Input
+          className="mt-2"
+          disabled
+          value=""
+          placeholder="Available after the assets of this cabinet are detected"
+          aria-label="Ask the manuals (not available yet)"
+        />
       </section>
       <PdfDialog doc={doc} onClose={() => setDoc(null)} />
     </div>
@@ -110,10 +155,17 @@ function DocList({ docs, onOpen }: { docs: Doc[]; onOpen: (d: Doc) => void }) {
       {docs.map((d) => (
         <li key={d.id} className="flex items-center justify-between gap-3 p-3 text-sm">
           <div className="min-w-0">
-            <p className="flex items-center gap-1.5 font-medium"><FileText className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">{d.title}</span></p>
-            <p className="text-xs text-muted-foreground">{dash(d.model)} · {d.pages ? `${d.pages} pages` : "— pages"}</p>
+            <p className="flex items-center gap-1.5 font-medium">
+              <FileText className="h-4 w-4 shrink-0 text-primary" />
+              <span className="truncate">{d.title}</span>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {dash(d.model)} · {d.pages ? `${d.pages} pages` : "— pages"}
+            </p>
           </div>
-          <Button size="sm" variant="secondary" onClick={() => onOpen(d)}>Open</Button>
+          <Button size="sm" variant="secondary" onClick={() => onOpen(d)}>
+            Open
+          </Button>
         </li>
       ))}
     </ul>

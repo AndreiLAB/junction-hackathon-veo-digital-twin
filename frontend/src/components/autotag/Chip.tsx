@@ -13,18 +13,42 @@ const styles = {
 
 export type ChipVariant = keyof typeof styles;
 
-export function Chip({ variant, children, className }: { variant: ChipVariant; children: ReactNode; className?: string }) {
+export function Chip({
+  variant,
+  children,
+  className,
+}: {
+  variant: ChipVariant;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium", styles[variant], className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium",
+        styles[variant],
+        className,
+      )}
+    >
       {children}
     </span>
   );
 }
 
-export function PanelChip({ model, source, confidence }: { model: string | null; source: "assumed" | "detected" | null; confidence: number | null }) {
+export function PanelChip({
+  model,
+  source,
+  confidence,
+}: {
+  model: string | null;
+  source: "assumed" | "detected" | null;
+  confidence: number | null;
+}) {
   if (!model && !source) return <Chip variant="neutral">Panel —</Chip>;
   return (
-    <Chip variant={source === "detected" ? "detected" : source === "assumed" ? "assumed" : "neutral"}>
+    <Chip
+      variant={source === "detected" ? "detected" : source === "assumed" ? "assumed" : "neutral"}
+    >
       {model ?? "Panel"} · {source ?? "—"}
       {confidence != null && ` · ${Math.round(confidence * 100)}%`}
     </Chip>

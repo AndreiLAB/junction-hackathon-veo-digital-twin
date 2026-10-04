@@ -2,7 +2,14 @@
 import { createContext, useContext } from "react";
 
 export type Pos = { x: number; y: number; z: number };
-export type Doc = { id: number; title: string; model: string | null; doc_type: string | null; pages: number | null; url: string };
+export type Doc = {
+  id: number;
+  title: string;
+  model: string | null;
+  doc_type: string | null;
+  pages: number | null;
+  url: string;
+};
 export type Device = {
   id: number | string;
   tag_id: string | null;
@@ -39,13 +46,41 @@ export type Methods = {
   e57: { available: boolean; cabinets_found: number; cabinets_known: number; description: string };
   image: { available: boolean; photos: number; manual_pose: boolean; description: string };
 };
-export type E57Tags = { method: "e57"; site: string; count: number; missing: string[]; note: string | null; tags: Tag[] };
+export type E57Tags = {
+  method: "e57";
+  site: string;
+  count: number;
+  missing: string[];
+  note: string | null;
+  tags: Tag[];
+};
 export type Category = "none" | "single" | "multiple";
-export type Photo = { name: string; scan: string | null; position: Pos; rotation_wxyz: number[]; category: Category; cabinets: string[]; image_url: string };
-export type Asset = { class: string; label: string; kind: "panel" | "device" | "lookalike"; xyxy: number[]; visible_fraction: number | null; status: string };
+export type Photo = {
+  name: string;
+  scan: string | null;
+  position: Pos;
+  rotation_wxyz: number[];
+  category: Category;
+  cabinets: string[];
+  image_url: string;
+};
+export type Asset = {
+  class: string;
+  label: string;
+  kind: "panel" | "device" | "lookalike";
+  xyxy: number[];
+  visible_fraction: number | null;
+  status: string;
+};
 export type LocatedCabinet = {
   tag: Tag;
-  view: { cabinet: string; u: number; v: number; depth_m: number | null; view_angle_deg: number | null };
+  view: {
+    cabinet: string;
+    u: number;
+    v: number;
+    depth_m: number | null;
+    view_angle_deg: number | null;
+  };
   assets: Asset[];
   detected_devices: Device[];
 };
@@ -63,10 +98,15 @@ export type LocateResult = {
 };
 export type ExportBody = { method: "e57" | "image" } & LocateBody;
 
-export const DEFAULT_BASE = ((import.meta.env["VITE_API_BASE_URL"] as string | undefined) ?? "http://localhost:8000").replace(/\/$/, "");
+export const DEFAULT_BASE = (
+  (import.meta.env["VITE_API_BASE_URL"] as string | undefined) ?? "http://localhost:8000"
+).replace(/\/$/, "");
 export const BASE_KEY = "autotag360.apiBase";
 
-export const ApiContext = createContext<{ base: string; setBase: (b: string) => void }>({ base: DEFAULT_BASE, setBase: () => {} });
+export const ApiContext = createContext<{ base: string; setBase: (b: string) => void }>({
+  base: DEFAULT_BASE,
+  setBase: () => {},
+});
 export const useApi = () => useContext(ApiContext);
 
 /** API links are relative (`/documents/2/file`); prefix them with the base URL. */
@@ -94,7 +134,9 @@ export async function apiRaw(base: string, path: string, init?: RequestInit) {
   try {
     r = await fetch(abs(base, path)!, init);
   } catch {
-    throw new Error(`Cannot reach ${base}. Check the API base URL in Settings and that the server is running.`);
+    throw new Error(
+      `Cannot reach ${base}. Check the API base URL in Settings and that the server is running.`,
+    );
   }
   if (!r.ok) throw new Error(`${r.status}: ${await errorText(r)}`);
   return r;
@@ -104,8 +146,12 @@ export async function api<T>(base: string, path: string, init?: RequestInit): Pr
   return (await apiRaw(base, path, init)).json() as Promise<T>;
 }
 
-export const postJson = <T,>(base: string, path: string, body: unknown) =>
-  api<T>(base, path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+export const postJson = <T>(base: string, path: string, body: unknown) =>
+  api<T>(base, path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -117,5 +163,7 @@ export function downloadBlob(blob: Blob, filename: string) {
 }
 
 export const dash = (v: unknown) => (v === null || v === undefined || v === "" ? "—" : String(v));
-export const pct = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v * 100)}%`);
-export const num = (v: number | null | undefined, d = 2) => (v === null || v === undefined ? "—" : v.toFixed(d));
+export const pct = (v: number | null | undefined) =>
+  v === null || v === undefined ? "—" : `${Math.round(v * 100)}%`;
+export const num = (v: number | null | undefined, d = 2) =>
+  v === null || v === undefined ? "—" : v.toFixed(d);

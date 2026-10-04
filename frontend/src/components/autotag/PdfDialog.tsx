@@ -12,13 +12,24 @@ export function PdfDialog({ doc, onClose }: { doc: Doc | null; onClose: () => vo
           <DialogTitle className="flex flex-wrap items-center justify-between gap-2 pr-8">
             <span className="truncate">{doc?.title}</span>
             {url && (
-              <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm font-normal text-primary underline">
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-sm font-normal text-primary underline"
+              >
                 Open in new tab <ExternalLink className="h-3.5 w-3.5" />
               </a>
             )}
           </DialogTitle>
         </DialogHeader>
-        {url && <iframe title={doc?.title} src={`${url}#page=1`} className="min-h-0 flex-1 rounded border" />}
+        {url && (
+          <iframe
+            title={doc?.title}
+            src={`${url}#page=1`}
+            className="min-h-0 flex-1 rounded border"
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
