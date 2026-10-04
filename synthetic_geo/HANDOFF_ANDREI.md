@@ -1,8 +1,7 @@
-# Hand-off for Andrei's machine (next training round). Deadline: Sunday 4 Oct, 12:00
+# Hand-off for Andrei's machine (next training round). Deadline: Sunday 4 Oct, 12:00. Be quick: the must-haves are steps 1-4, the relay model and the export (7-8)
 
 You already have a working pipeline (branch `trained-relay-model-updated`: relay + `other_hmi`, YOLOv8s, 15 epochs). This file lists, **in priority order**, what to change so
 the next run is better and covers the extra assets. Do the steps in order; **stop adding scope when time runs short, but always finish steps 1-4 and 7-8.**
-Suggested clock (now ~08:15): steps 1-3 by 09:00, train 09:00-10:30, evaluate + export 10:30-11:15, push by 11:15.
 
 ## What we found in your results (so the changes make sense)
 * Real held-out result: precision 0.75, recall **0.25**, AP50 ~0.35 (about 30 boxes: small). Synthetic val (AP50 0.995) does not predict this.
@@ -40,7 +39,7 @@ The 0.035 box (2nd colour in the legend) must hug the relay in all photos includ
 * Run `check_dataset.py` and **look at the sheets**: no ghost relay edges, boxes on the relays, OT1 relays now labelled.
 
 ## Step 5: train, then (only if time allows) add the other assets
-1. **Relay + Cerdex model (must-have):** same recipe as before, `yolov8s.pt`, `imgsz=1280`, **at least 30 epochs** (15 was short; early stopping 25). If recall is still low, try `yolov8m.pt`.
+1. **Relay + Cerdex model (must-have):** same recipe as before, `yolov8s.pt`, `imgsz=1280`, **at least 40 epochs** (15 was short; early stopping 25; on a GPU this is quick). If recall is still low, try `yolov8m.pt`.
 2. **Extra assets (stretch):** classes `unigear_zs2_panel` (train/infer on the **full face downscaled to 1280**, a second model: a panel is 2.29 x 1.0 m) and `vd4_breaker_window`
    (native tiles; present on H02, H04, H05; **absent on H03**; H01 unmeasured: measure it with `verify_boxes.py` or leave it out). Labels are geometry-only on REAL photos. Numbers: `relay_geometry.json`, `ANTIGRAVITY_PROMPT.md` section 5b. Assumption: 36 kV UniGear.
 
