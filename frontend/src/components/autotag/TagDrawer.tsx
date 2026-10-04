@@ -97,32 +97,43 @@ function DrawerBody({ initial }: { initial: Tag }) {
       </dl>
 
       <section>
-        <h3 className="label-mono">Devices ({tag.devices.length})</h3>
-        {tag.devices.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No assets detected yet</p>
-        ) : (
-          <ul className="mt-2 space-y-3">
-            {tag.devices.map((d) => (
-              <li key={d.id} className="rounded-lg border p-3 text-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">
-                    {dash(d.type)}{" "}
-                    <span className="font-mono text-xs text-muted-foreground">{dash(d.class)}</span>
-                  </span>
-                  <span className="flex gap-1.5">
-                    <Chip variant="detected">{pct(d.confidence)}</Chip>
-                    {d.needs_review && <Chip variant="review">needs review</Chip>}
-                  </span>
-                </div>
-                {d.model && <p className="mt-1 text-xs text-muted-foreground">{d.model}</p>}
-                {d.review_reasons.length > 0 && (
-                  <p className="mt-1 text-xs text-destructive">{d.review_reasons.join(" · ")}</p>
-                )}
-                {d.documents.length > 0 && <DocList docs={d.documents} onOpen={setDoc} />}
-              </li>
-            ))}
-          </ul>
-        )}
+        {(() => {
+          const uniqueDevices = Array.from(new Map(tag.devices.map((d) => [d.class, d])).values());
+          return (
+            <>
+              <h3 className="label-mono">Devices ({uniqueDevices.length})</h3>
+              {uniqueDevices.length === 0 ? (
+                <p className="mt-2 text-sm text-muted-foreground">No assets detected yet</p>
+              ) : (
+                <ul className="mt-2 space-y-3">
+                  {uniqueDevices.map((d) => (
+                    <li key={d.id} className="rounded-lg border p-3 text-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-medium">
+                          {dash(d.type)}{" "}
+                          <span className="font-mono text-xs text-muted-foreground">
+                            {dash(d.class)}
+                          </span>
+                        </span>
+                        <span className="flex gap-1.5">
+                          <Chip variant="detected">{pct(d.confidence)}</Chip>
+                          {d.needs_review && <Chip variant="review">needs review</Chip>}
+                        </span>
+                      </div>
+                      {d.model && <p className="mt-1 text-xs text-muted-foreground">{d.model}</p>}
+                      {d.review_reasons.length > 0 && (
+                        <p className="mt-1 text-xs text-destructive">
+                          {d.review_reasons.join(" · ")}
+                        </p>
+                      )}
+                      {d.documents.length > 0 && <DocList docs={d.documents} onOpen={setDoc} />}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          );
+        })()}
       </section>
 
       <section>

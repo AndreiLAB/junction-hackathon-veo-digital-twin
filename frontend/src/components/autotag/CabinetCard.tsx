@@ -87,9 +87,12 @@ export function CabinetCard({
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span>
-            {tag.devices.length
-              ? `${tag.devices.length} device${tag.devices.length > 1 ? "s" : ""}`
-              : "No assets detected yet"}
+            {(() => {
+              const uniqueCount = new Set(tag.devices.map((d) => d.class)).size;
+              return uniqueCount
+                ? `${uniqueCount} device${uniqueCount > 1 ? "s" : ""}`
+                : "No assets detected yet";
+            })()}
           </span>
           <span className="inline-flex items-center gap-1">
             <FileText className="h-3.5 w-3.5" />
