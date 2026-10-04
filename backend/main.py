@@ -20,6 +20,8 @@ DEVICE_CLASSES = {
     "abb_relion_615": ("ABB 615 protection relay", "ABB 615"),
     "relay_front": ("ABB 615 protection relay", "ABB 615"),
     "relay_rear": ("ABB 615 protection relay", "ABB 615"),
+    # the breaker seen through the window marked "VD4" on the lower door of the UniGear panels: carries the VD4 manual
+    "vd4_breaker_window": ("VD4 circuit breaker", "VD4"),
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 

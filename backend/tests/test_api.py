@@ -106,3 +106,22 @@ def test_ask_cites_pages_and_says_not_found(client):
     scoped = client.post("/ask", json={"question": "closing spring charged", "tag_id": "H05"}).json()
     assert scoped["found"] and {p["model"] for p in scoped["passages"]} <= {"UniGear ZS2", "VD4"}
     assert client.post("/ask", json={"question": "anything", "tag_id": "H04"}).json()["found"] is False
+
+
+def test_vd4_window_becomes_a_device_with_the_vd4_manual(client):
+    client.post("/import/cabinets", json=CABINETS)
+    det = detection(**{"class": "vd4_breaker_window", "position": {"x": 1.0, "y": 1.1, "z": 0.8}})
+    dev = client.post("/detections", json=[det]).json()["created"][0]
+    assert dev["tag_id"] == "H05" and dev["type"] == "VD4 circuit breaker" and dev["model"] == "VD4"
+    assert dev["documents"][0]["model"] == "VD4" and dev["documents"][0]["pages"] == 132 and not dev["needs_review"]
+    # the same cabinet carries the relay and the breaker as separate devices
+    client.post("/detections", json=[detection()])
+    assert sorted(d["class"] for d in client.get("/tags/H05").json()["devices"]) == ["abb_relion_615", "vd4_breaker_window"]
+
+
+def test_vd4_without_position_is_flagged_and_other_classes_still_ignored(client):
+    out = client.post("/detections", json=[detection(**{"class": "vd4_breaker_window", "position": None}),
+                                           detection(**{"class": "other_hmi"}),
+                                           detection(**{"class": "unigear_zs2_panel"})]).json()
+    assert out["created"][0]["needs_review"] and out["created"][0]["review_reasons"] == ["no position"]
+    assert [i["class"] for i in out["ignored"]] == ["other_hmi", "unigear_zs2_panel"]

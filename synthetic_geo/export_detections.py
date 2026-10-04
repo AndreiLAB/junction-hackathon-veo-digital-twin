@@ -10,7 +10,7 @@ per-class NMS -> location gate (camera pose says where a relay must be) -> backe
 Outputs
   detections.json         what the backend takes in (POST /detections): a list of
                           {"image","class","conf","box":[x,y,w,h],"ocr":[],"ocr_conf":null,"position":{x,y,z}|null}
-                          * only class "abb_relion_615" (other_hmi is evidence for rejection, never a device);
+                          * classes "abb_relion_615" and "vd4_breaker_window" (other_hmi is evidence for rejection, never a device);
                           * box = x, y of the top-left corner, width, height, in full-image pixels;
                           * position = the detection's centre ray intersected with the relay front plane of the cabinet the gate
                             assigned (a measurement from the detection, not the prediction); null when the gate rejected it,
@@ -33,6 +33,8 @@ from location_gate import Gate  # noqa: E402
 
 TILE, STRIDE, FRAME = 1280, 960, 4096
 REL_CLASS = "abb_relion_615"
+VD4_CLASS = "vd4_breaker_window"      # exported as a device too (backend: VD4 circuit breaker + VD4 manual)
+EXPORT_CLASSES = (REL_CLASS, VD4_CLASS)
 
 
 def tile_origins(size=FRAME, tile=TILE, stride=STRIDE):
@@ -90,10 +92,12 @@ def detect_image(img, predict):
     return out
 
 
-def front_plane_position(cam, cabinet, xyxy, reg):
-    """Centre ray of the box intersected with the relay front plane of that cabinet (x = cabinet x + n_x * 0.07)."""
+def front_plane_position(cam, cabinet, xyxy, reg, front=None):
+    """Centre ray of the box intersected with the asset plane of that cabinet: x = cabinet x + n_x * front
+    (front = the relay front plane, 0.07 m, by default; 0 for assets on the door plane such as the VD4 window)."""
     n = door_normal(reg[cabinet]["position"])
-    xp = reg[cabinet]["position"]["x"] + n[0] * G.GEO["relay"]["front_plane_toward_corridor_m"]
+    front = G.GEO["relay"]["front_plane_toward_corridor_m"] if front is None else front
+    xp = reg[cabinet]["position"]["x"] + n[0] * front
     o, d = cam.ray((xyxy[0] + xyxy[2]) / 2, (xyxy[1] + xyxy[3]) / 2)
     if abs(d[0]) < 1e-6:
         return None
@@ -104,10 +108,50 @@ def front_plane_position(cam, cabinet, xyxy, reg):
     return {"x": round(float(p[0]), 3), "y": round(float(p[1]), 3), "z": round(float(p[2]), 3)}
 
 
+def vd4_expected(cam, reg):
+    """Predicted VD4 window boxes (measured geometry in relay_geometry.json: vd4_breaker_window). Only cabinets listed in `present_on`:
+    a window on a cabinet where none is expected (H03 has a warning triangle there; H01 is unmeasured) gets no expectation."""
+    v = G.GEO.get("vd4_breaker_window")
+    out = []
+    for cid in (v or {}).get("present_on", []):
+        P = reg[cid]["position"]
+        y, z, w, h = P["y"] + v["offset_from_nameplate_m"]["dy"], P["z"] + v["offset_from_nameplate_m"]["dz"], v["size_m"]["w"], v["size_m"]["h"]
+        pr = [cam.project(np.array(p)) for p in [(P["x"], y - w / 2, z + h / 2), (P["x"], y + w / 2, z + h / 2), (P["x"], y + w / 2, z - h / 2), (P["x"], y - w / 2, z - h / 2)]]
+        if any(p is None or p[2] < 0.3 for p in pr):
+            continue
+        xs, ys = [p[0] for p in pr], [p[1] for p in pr]
+        if max(xs) < 0 or max(ys) < 0 or min(xs) > FRAME or min(ys) > FRAME:
+            continue
+        out.append({"cabinet": cid, "xyxy": [min(xs), min(ys), max(xs), max(ys)]})
+    return out
+
+
+def assign_vd4(cam, reg, dets, min_iou=0.30, size_ratio=(0.6, 1.6)):
+    """Same rule as the relay gate (IoU >= 0.30, width ratio 0.6-1.6), against the predicted VD4 windows."""
+    from location_gate import iou
+    exp, used, out = vd4_expected(cam, reg), set(), []
+    for c, s, b in sorted(dets, key=lambda d: -d[1]):
+        best, bi = None, 0.0
+        for e in exp:
+            if e["cabinet"] in used:
+                continue
+            i = iou(b, e["xyxy"])
+            ratio = (b[2] - b[0]) / max(1e-6, e["xyxy"][2] - e["xyxy"][0])
+            if i > bi and size_ratio[0] <= ratio <= size_ratio[1]:
+                best, bi = e, i
+        ok = bool(best) and bi >= min_iou
+        if ok:
+            used.add(best["cabinet"])
+        out.append({"class": c, "conf": s, "xyxy": b, "cabinet": best["cabinet"] if ok else None, "accepted": ok, "iou": round(bi, 2) if ok else None,
+                    "reason": "matches predicted VD4 window position and size" if ok else "no expected VD4 window here (absent on H03, unmeasured on H01) or wrong size: needs_review"})
+    return out
+
+
 def build_records(image_name, dets, gate, reg, use_gate=True):
     """YOLO detections of one photo -> (backend records, detail records)."""
     relays = [(c, s, b) for c, s, b in dets if c == REL_CLASS]
-    others = [(c, s, b) for c, s, b in dets if c != REL_CLASS]
+    vd4 = [(c, s, b) for c, s, b in dets if c == VD4_CLASS]
+    others = [(c, s, b) for c, s, b in dets if c not in EXPORT_CLASSES]
     gated = gate.assign(image_name, [{"class": c, "conf": s, "xyxy": b} for c, s, b in relays]) if use_gate else \
         [{"class": c, "conf": s, "xyxy": b, "cabinet": None, "accepted": False, "reason": "gate disabled"} for c, s, b in relays]
     cam = gate.cams[image_name]
@@ -119,16 +163,23 @@ def build_records(image_name, dets, gate, reg, use_gate=True):
                         "box": [round(b[0], 1), round(b[1], 1), round(b[2] - b[0], 1), round(b[3] - b[1], 1)],
                         "ocr": [], "ocr_conf": None, "position": pos})
         detail.append({**backend[-1], "cabinet": g.get("cabinet"), "gate_accepted": g["accepted"], "gate_reason": g["reason"], "gate_iou": g.get("iou")})
+    cam_ = gate.cams[image_name]
+    for g in (assign_vd4(cam_, reg, vd4) if use_gate else [{"class": c, "conf": s, "xyxy": b, "cabinet": None, "accepted": False, "reason": "gate disabled"} for c, s, b in vd4]):
+        b = g["xyxy"]
+        pos = front_plane_position(cam_, g["cabinet"], b, reg, front=0.0) if g["accepted"] else None
+        backend.append({"image": image_name, "class": VD4_CLASS, "conf": round(float(min(max(g["conf"], 0.0), 1.0)), 4),
+                        "box": [round(b[0], 1), round(b[1], 1), round(b[2] - b[0], 1), round(b[3] - b[1], 1)], "ocr": [], "ocr_conf": None, "position": pos})
+        detail.append({**backend[-1], "cabinet": g.get("cabinet"), "gate_accepted": g["accepted"], "gate_reason": g["reason"], "gate_iou": g.get("iou")})
     for c, s, b in others:
         detail.append({"image": image_name, "class": c, "conf": round(float(s), 4), "box": [round(b[0], 1), round(b[1], 1), round(b[2] - b[0], 1), round(b[3] - b[1], 1)],
-                       "cabinet": None, "gate_accepted": False, "gate_reason": "look-alike class, not exported"})
+                       "cabinet": None, "gate_accepted": False, "gate_reason": "look-alike class (other_hmi), not exported"})
     return backend, detail
 
 
 def validate(records):
     """Fail loudly if a record would be refused by the backend (same rules as backend.main.DetectionIn)."""
     for r in records:
-        assert r["class"] == REL_CLASS and isinstance(r["image"], str)
+        assert r["class"] in EXPORT_CLASSES and isinstance(r["image"], str)
         assert 0 <= r["conf"] <= 1 and len(r["box"]) == 4 and r["box"][2] > 0 and r["box"][3] > 0
         assert r["ocr"] == [] and r["ocr_conf"] is None
         assert r["position"] is None or set(r["position"]) == {"x", "y", "z"}
@@ -171,7 +222,9 @@ def selftest():
     name = "img_067.jpg"
     exp = gate.expected(name)[0]
     x0, y0, x1, y1 = exp["xyxy"]
-    full = [("abb_relion_615", 0.9, [x0, y0, x1, y1]), ("abb_relion_615", 0.8, [x0 + 1500, y0 + 900, x1 + 1500, y1 + 900]), ("other_hmi", 0.7, [100, 100, 300, 250])]
+    vexp = vd4_expected(gate.cams[name], reg)[0]["xyxy"]
+    full = [("vd4_breaker_window", 0.85, list(vexp)), ("vd4_breaker_window", 0.6, [vexp[0] + 900, vexp[1] - 700, vexp[2] + 900, vexp[3] - 700]),
+            ("abb_relion_615", 0.9, [x0, y0, x1, y1]), ("abb_relion_615", 0.8, [x0 + 1500, y0 + 900, x1 + 1500, y1 + 900]), ("other_hmi", 0.7, [100, 100, 300, 250])]
     # tile it exactly like the real run, so tiling + NMS + coordinate mapping are exercised
     origins, calls = tile_origins(), []
 
@@ -188,9 +241,10 @@ def selftest():
     validate(backend)
     print(json.dumps(backend, indent=1))
     ok = [r for r in backend if r["position"]]
-    assert len(backend) == 2 and len(ok) == 1, "expected 2 relay detections, one accepted by the gate"
+    assert len(backend) == 4 and len(ok) == 2, "expected 2 relay + 2 VD4 detections, one of each accepted"
+    assert sorted(r["class"] for r in ok) == ["abb_relion_615", "vd4_breaker_window"]
     cab = [d for d in detail if d["gate_accepted"]][0]["cabinet"]
-    print(f"selftest OK: accepted detection -> {cab} at {ok[0]['position']}; displaced one has position null; other_hmi not exported")
+    print(f"selftest OK: relay and VD4 window accepted on {cab} (positions {[r['position'] for r in ok]}); displaced ones have position null; other_hmi not exported")
 
 
 if __name__ == "__main__":
