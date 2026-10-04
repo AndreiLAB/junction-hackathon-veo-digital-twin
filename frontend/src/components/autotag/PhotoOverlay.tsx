@@ -85,38 +85,48 @@ export function PhotoOverlay({
                       </g>
                     );
                   })}
-                  {cab.detected_devices
-                    .filter((d) => d.xyxy)
-                    .map((d) => {
-                      const [x0, y0, x1, y1] = d.xyxy as [number, number, number, number];
-                      const s = assetStyle({ class: d.class ?? "", kind: "device" });
-                      return (
-                        <g key={d.id}>
-                          <title>{`${d.type ?? "device"} (${d.class ?? "—"}) · detected ${d.confidence != null ? Math.round(d.confidence * 100) + "%" : ""}`}</title>
-                          <rect
-                            x={x0}
-                            y={y0}
-                            width={x1 - x0}
-                            height={y1 - y0}
-                            fill="transparent"
-                            stroke={s.color}
-                            strokeWidth={3}
-                            vectorEffect="non-scaling-stroke"
-                          />
-                          <text
-                            x={x0}
-                            y={y0 - 6}
-                            fontSize={font}
-                            fill={s.color}
-                            fontWeight={700}
-                            style={{ paintOrder: "stroke", stroke: "black", strokeWidth: font / 6 }}
-                          >
-                            detected{" "}
-                            {d.confidence != null ? `${Math.round(d.confidence * 100)}%` : ""}
-                          </text>
-                        </g>
-                      );
-                    })}
+                  {(() => {
+                    const uniqueDevices = Array.from(
+                      new Map(cab.detected_devices.map((d) => [d.class, d])).values(),
+                    );
+                    return uniqueDevices
+                      .filter((d) => d.source?.box)
+                      .map((d) => {
+                        const [x, y, w, h] = d.source.box as [number, number, number, number];
+                        const [x0, y0, x1, y1] = [x, y, x + w, y + h];
+                        const s = assetStyle({ class: d.class ?? "", kind: "device" });
+                        return (
+                          <g key={d.id}>
+                            <title>{`${d.type ?? "device"} (${d.class ?? "—"}) · detected ${d.confidence != null ? Math.round(d.confidence * 100) + "%" : ""}`}</title>
+                            <rect
+                              x={x0}
+                              y={y0}
+                              width={x1 - x0}
+                              height={y1 - y0}
+                              fill="transparent"
+                              stroke={s.color}
+                              strokeWidth={3}
+                              vectorEffect="non-scaling-stroke"
+                            />
+                            <text
+                              x={x0}
+                              y={y0 - 6}
+                              fontSize={font}
+                              fill={s.color}
+                              fontWeight={700}
+                              style={{
+                                paintOrder: "stroke",
+                                stroke: "black",
+                                strokeWidth: font / 6,
+                              }}
+                            >
+                              detected{" "}
+                              {d.confidence != null ? `${Math.round(d.confidence * 100)}%` : ""}
+                            </text>
+                          </g>
+                        );
+                      });
+                  })()}
                 </g>
               );
             })}
