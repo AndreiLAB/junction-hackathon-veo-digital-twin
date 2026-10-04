@@ -26,8 +26,6 @@ DEVICE_CLASSES = {
     "abb_relion_615": ("ABB 615 protection relay", "ABB 615"),
     "relay_front": ("ABB 615 protection relay", "ABB 615"),
     "relay_rear": ("ABB 615 protection relay", "ABB 615"),
-    # the breaker seen through the window marked "VD4" on the lower door of the UniGear panels: carries the VD4 manual
-    "vd4_breaker_window": ("VD4 circuit breaker", "VD4"),
 }
 # the cabinet itself: not a device, but evidence for the cabinet tag (panel_model, source, confidence)
 PANEL_CLASS, PANEL_MODEL = "unigear_panel", "UniGear ZS2"
@@ -327,9 +325,11 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                 ignored.append({"image": d.image, "class": d.class_name, "reason": "not a device class"})
                 continue
             dtype, model = DEVICE_CLASSES[d.class_name]
-            reasons, tag_id, p = [], None, d.position
             if d.conf < s.conf_min:
-                reasons.append(f"confidence {d.conf:.2f} below {s.conf_min}")
+                ignored.append({"image": d.image, "class": d.class_name, "reason": f"confidence {d.conf:.2f} below {s.conf_min}"})
+                continue
+            
+            reasons, tag_id, p = [], None, d.position
             if p is None:
                 reasons.append("no position")
             elif not cabinets:
