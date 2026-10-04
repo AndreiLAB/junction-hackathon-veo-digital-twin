@@ -24,7 +24,7 @@ def main():
     a = ap.parse_args()
     from ultralytics import YOLO
     YOLO(a.model).train(
-        data=a.data, epochs=a.epochs, imgsz=a.imgsz, batch=a.batch, device=a.device, patience=25,
+        data=a.data, epochs=a.epochs, imgsz=a.imgsz, batch=a.batch, device=a.device, patience=25, cache=True, workers=8,
         fliplr=0.0, flipud=0.0, degrees=0.0, shear=0.0, perspective=0.0,
         scale=0.15, translate=0.05, hsv_h=0.01, hsv_s=0.25, hsv_v=0.25, mosaic=0.3, close_mosaic=10,
         project="runs_relay", name="geo_synth")

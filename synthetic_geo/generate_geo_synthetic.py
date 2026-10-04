@@ -94,7 +94,7 @@ def relay_geometry(cam, cid, jit=(0, 0, 0)):
             relays = [{"dy": off["dy"], "dz": off["dz"], "width_m": GEO["relay"]["frame_width_m"], "height_m": GEO["relay"]["frame_height_m"]}]
             
     for i, rel in enumerate(relays):
-        c = P + np.array([0, rel["dy"] + jit[0] / 1000, rel["dz"] + jit[1] / 1000]) + n * GEO["relay"]["front_plane_toward_corridor_m"]
+        c = P + np.array([0, rel["dy"] + jit[0] / 1000, rel["dz"] + jit[1] / 1000]) + n * rel.get("front_plane_m", GEO["relay"]["front_plane_toward_corridor_m"])
         if float(n @ (cam.C - c)) <= 0:
             continue
         r, up = right_vec(cam, c), np.array([0, 0, 1.0])
@@ -102,7 +102,7 @@ def relay_geometry(cam, cid, jit=(0, 0, 0)):
             continue
         ang = np.radians(jit[2])
         r, up = r * np.cos(ang) + up * np.sin(ang), up * np.cos(ang) - r * np.sin(ang)
-        w, h, d = rel["width_m"], rel["height_m"], GEO["relay"]["body_depth_m"]
+        w, h, d = rel["width_m"], rel["height_m"], rel.get("front_plane_m", GEO["relay"]["body_depth_m"])
         front = [c - r * w / 2 + up * h / 2, c + r * w / 2 + up * h / 2, c + r * w / 2 - up * h / 2, c - r * w / 2 - up * h / 2]
         back = [p - n * d for p in front]
         pr = [cam.project(p) for p in front + back]
@@ -298,7 +298,7 @@ def plan(view, cams, a):
     jobs, pairs, empties = [], Counter(), {"train": [], "val": []}
     for e in view:
         i = int(e["file"][4:7]); cam = cams[i]; split = "val" if e["scan_index"] in HOLDOUT_SCANS else "train"
-        if not (-5.5 <= cam.C[0] <= -2.3):
+        if False: # Removed far-relay filtering
             continue
         relays = {f"{c}_{i}": g for c in ("H01", "H02", "H03", "H04", "H05", "OT1", "VLK", "OKK1") for i, g in enumerate(relay_geometry(cam, c))}
         relays = {k: v for k, v in relays.items() if v["depth"] <= MAX_RELAY_DEPTH}

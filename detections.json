@@ -1,1123 +1,440 @@
 [
-  {
-    "image": "img_000.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_001.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_002.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_003.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_004.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_005.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_006.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_007.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.627,
-        "xyxy": [
-          398.9,
-          1703.0,
-          611.8,
-          1847.5
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_008.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_009.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_010.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.957,
-        "xyxy": [
-          3721.7,
-          1718.3,
-          3910.7,
-          1839.0
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.951,
-        "xyxy": [
-          3257.5,
-          1788.4,
-          3327.7,
-          1877.7
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_011.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_012.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_013.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_014.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_015.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_016.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.962,
-        "xyxy": [
-          2674.8,
-          1722.0,
-          2799.2,
-          1836.7
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.958,
-        "xyxy": [
-          3215.7,
-          1625.9,
-          3328.0,
-          1778.1
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.953,
-        "xyxy": [
-          778.5,
-          1898.4,
-          795.9,
-          1955.5
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.938,
-        "xyxy": [
-          855.5,
-          1916.6,
-          867.5,
-          1963.9
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.78,
-        "xyxy": [
-          2362.1,
-          1781.9,
-          2445.8,
-          1869.6
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.757,
-        "xyxy": [
-          2003.5,
-          1848.9,
-          2049.1,
-          1906.9
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_017.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_018.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_019.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.491,
-        "xyxy": [
-          1623.9,
-          1636.5,
-          1857.0,
-          1794.2
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.413,
-        "xyxy": [
-          2664.5,
-          2830.1,
-          3326.6,
-          3355.0
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_020.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_021.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_022.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.963,
-        "xyxy": [
-          1217.7,
-          1859.4,
-          1252.6,
-          1945.0
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.958,
-        "xyxy": [
-          1360.5,
-          1896.8,
-          1380.3,
-          1960.5
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.957,
-        "xyxy": [
-          3175.6,
-          1714.3,
-          3304.8,
-          1832.8
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.888,
-        "xyxy": [
-          3742.0,
-          1600.4,
-          4013.3,
-          1766.6
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.66,
-        "xyxy": [
-          2843.3,
-          1786.0,
-          2916.7,
-          1871.4
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_023.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_024.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_025.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.807,
-        "xyxy": [
-          2247.5,
-          1718.0,
-          2435.4,
-          1857.6
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_026.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_027.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_028.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.981,
-        "xyxy": [
-          0.7,
-          1624.0,
-          109.0,
-          1861.7
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.973,
-        "xyxy": [
-          554.0,
-          1799.7,
-          616.5,
-          1924.1
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.943,
-        "xyxy": [
-          3367.3,
-          1626.0,
-          3606.1,
-          1790.4
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.855,
-        "xyxy": [
-          2776.1,
-          1735.1,
-          2902.0,
-          1850.7
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_029.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_030.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_031.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.944,
-        "xyxy": [
-          2397.9,
-          1405.9,
-          2966.3,
-          1761.5
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_032.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_033.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.89,
-        "xyxy": [
-          1313.0,
-          1649.8,
-          1541.9,
-          1808.1
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.825,
-        "xyxy": [
-          3004.0,
-          1698.9,
-          3212.7,
-          1844.8
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.678,
-        "xyxy": [
-          3807.9,
-          1724.8,
-          4020.6,
-          1865.9
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_034.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_035.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_036.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_037.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.99,
-        "xyxy": [
-          2371.5,
-          1386.9,
-          2965.1,
-          1759.7
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_038.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_039.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.96,
-        "xyxy": [
-          3093.5,
-          1681.2,
-          3327.9,
-          1839.0
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.96,
-        "xyxy": [
-          2228.2,
-          1671.2,
-          2455.2,
-          1824.0
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.885,
-        "xyxy": [
-          2228.3,
-          1671.8,
-          2304.0,
-          1830.0
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_040.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.921,
-        "xyxy": [
-          578.0,
-          1810.2,
-          722.4,
-          1927.5
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_041.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_042.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_043.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.708,
-        "xyxy": [
-          1813.2,
-          1024.0,
-          2304.0,
-          1326.1
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_044.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_045.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.918,
-        "xyxy": [
-          3682.4,
-          1714.2,
-          3894.3,
-          1857.8
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.81,
-        "xyxy": [
-          1921.2,
-          1662.6,
-          2141.2,
-          1824.4
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.427,
-        "xyxy": [
-          2832.4,
-          1690.4,
-          3049.8,
-          1838.9
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_046.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.973,
-        "xyxy": [
-          2758.0,
-          1857.7,
-          2838.4,
-          1999.4
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.367,
-        "xyxy": [
-          345.3,
-          1792.8,
-          475.9,
-          1918.9
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.304,
-        "xyxy": [
-          2816.0,
-          1853.5,
-          2846.1,
-          1995.0
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_047.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_048.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_049.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_050.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_051.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.637,
-        "xyxy": [
-          2912.5,
-          1664.7,
-          3160.2,
-          1818.8
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_052.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.973,
-        "xyxy": [
-          3079.8,
-          1836.8,
-          3170.2,
-          1990.0
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.968,
-        "xyxy": [
-          2822.6,
-          1929.6,
-          2860.2,
-          2025.1
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.336,
-        "xyxy": [
-          2.3,
-          1667.2,
-          137.3,
-          1838.8
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.262,
-        "xyxy": [
-          1048.3,
-          1865.5,
-          1147.2,
-          1959.8
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_053.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_054.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_055.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_056.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.961,
-        "xyxy": [
-          3847.7,
-          1903.7,
-          3979.3,
-          1989.6
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.636,
-        "xyxy": [
-          1082.0,
-          1412.4,
-          1206.3,
-          1671.2
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_057.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.963,
-        "xyxy": [
-          500.3,
-          1907.6,
-          653.2,
-          1997.1
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.512,
-        "xyxy": [
-          1213.6,
-          1736.3,
-          1469.1,
-          1908.0
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.477,
-        "xyxy": [
-          1213.7,
-          1737.7,
-          1279.8,
-          1892.4
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_058.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_059.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_060.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_061.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.416,
-        "xyxy": [
-          3521.0,
-          1233.1,
-          4096.0,
-          1675.2
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_062.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.937,
-        "xyxy": [
-          1159.6,
-          1405.0,
-          1279.4,
-          1660.8
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_063.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.962,
-        "xyxy": [
-          1570.7,
-          1922.0,
-          1712.1,
-          2007.1
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.956,
-        "xyxy": [
-          858.1,
-          1905.8,
-          1001.0,
-          1990.7
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.347,
-        "xyxy": [
-          2245.5,
-          1763.9,
-          2482.9,
-          1963.8
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_064.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_065.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_066.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_067.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_068.jpg",
-    "boxes": [
-      {
-        "class": "abb_relion_615",
-        "conf": 0.318,
-        "xyxy": [
-          1028.8,
-          1346.6,
-          1163.4,
-          1639.5
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_069.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.958,
-        "xyxy": [
-          2448.4,
-          1941.7,
-          2587.8,
-          2029.6
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.951,
-        "xyxy": [
-          1736.5,
-          1923.9,
-          1879.5,
-          2011.9
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_070.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_071.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_072.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_073.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_074.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_075.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.959,
-        "xyxy": [
-          3292.7,
-          1967.5,
-          3429.6,
-          2054.0
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.957,
-        "xyxy": [
-          2619.7,
-          1950.1,
-          2751.9,
-          2034.5
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_076.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_077.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_078.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_079.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_080.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_081.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.957,
-        "xyxy": [
-          3734.4,
-          1959.9,
-          3880.9,
-          2048.3
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_082.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.973,
-        "xyxy": [
-          334.8,
-          1986.3,
-          434.5,
-          2061.1
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.964,
-        "xyxy": [
-          2683.2,
-          1623.0,
-          2783.6,
-          1811.6
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.419,
-        "xyxy": [
-          3077.2,
-          1128.5,
-          3327.7,
-          1621.0
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_083.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_084.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_085.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_086.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_087.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_088.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.978,
-        "xyxy": [
-          469.3,
-          1993.2,
-          555.4,
-          2062.6
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.966,
-        "xyxy": [
-          830.6,
-          2013.5,
-          883.7,
-          2067.9
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_089.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_090.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_091.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_092.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_093.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_094.jpg",
-    "boxes": [
-      {
-        "class": "other_hmi",
-        "conf": 0.979,
-        "xyxy": [
-          1006.1,
-          2019.9,
-          1046.8,
-          2066.4
-        ]
-      },
-      {
-        "class": "other_hmi",
-        "conf": 0.959,
-        "xyxy": [
-          1185.6,
-          2030.2,
-          1214.5,
-          2069.5
-        ]
-      },
-      {
-        "class": "abb_relion_615",
-        "conf": 0.524,
-        "xyxy": [
-          2880.7,
-          1435.3,
-          3051.8,
-          1729.6
-        ]
-      }
-    ]
-  },
-  {
-    "image": "img_095.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_096.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_097.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_098.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_099.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_100.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_101.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_102.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_103.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_104.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_105.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_106.jpg",
-    "boxes": []
-  },
-  {
-    "image": "img_107.jpg",
-    "boxes": []
+ {
+  "image": "img_010.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.933,
+  "box": [
+   3255.9,
+   1782.7,
+   116.1,
+   94.0
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.667,
+   "y": -3.716,
+   "z": 1.826
   }
+ },
+ {
+  "image": "img_016.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8672,
+  "box": [
+   2672.8,
+   1719.6,
+   127.2,
+   117.2
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.687,
+   "y": -2.74,
+   "z": 1.838
+  }
+ },
+ {
+  "image": "img_022.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.6617,
+  "box": [
+   2842.2,
+   1784.9,
+   78.2,
+   88.0
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.658,
+   "y": -5.768,
+   "z": 1.84
+  }
+ },
+ {
+  "image": "img_028.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.7438,
+  "box": [
+   2775.7,
+   1734.0,
+   111.0,
+   115.7
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.658,
+   "y": -5.808,
+   "z": 1.84
+  }
+ },
+ {
+  "image": "img_038.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.3386,
+  "box": [
+   960.5,
+   1920.0,
+   257.5,
+   411.3
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -2.79,
+   "y": -5.908,
+   "z": 1.384
+  }
+ },
+ {
+  "image": "img_043.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.6746,
+  "box": [
+   1920.0,
+   651.4,
+   744.1,
+   578.6
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -2.79,
+   "y": -5.921,
+   "z": 1.716
+  }
+ },
+ {
+  "image": "img_043.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.4311,
+  "box": [
+   1974.7,
+   1920.0,
+   678.8,
+   606.4
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -2.79,
+   "y": -5.919,
+   "z": 1.393
+  }
+ },
+ {
+  "image": "img_043.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.3908,
+  "box": [
+   1995.4,
+   1920.0,
+   244.6,
+   603.4
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_043.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.3182,
+  "box": [
+   1819.5,
+   960.0,
+   420.5,
+   450.7
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_046.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.2575,
+  "box": [
+   767.2,
+   1866.6,
+   80.3,
+   97.2
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.69,
+   "y": -1.853,
+   "z": 1.83
+  }
+ },
+ {
+  "image": "img_049.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.6603,
+  "box": [
+   0.0,
+   1920.0,
+   261.1,
+   609.6
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_052.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.4579,
+  "box": [
+   1072.2,
+   1865.8,
+   75.1,
+   94.8
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.687,
+   "y": -2.837,
+   "z": 1.84
+  }
+ },
+ {
+  "image": "img_052.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.3695,
+  "box": [
+   672.9,
+   1796.7,
+   121.3,
+   120.8
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.667,
+   "y": -3.84,
+   "z": 1.836
+  }
+ },
+ {
+  "image": "img_061.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8494,
+  "box": [
+   961.2,
+   583.4,
+   521.2,
+   551.5
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_061.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8137,
+  "box": [
+   705.7,
+   573.5,
+   574.3,
+   552.9
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_067.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8043,
+  "box": [
+   632.5,
+   530.9,
+   647.5,
+   612.3
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.676,
+   "y": -4.784,
+   "z": 1.814
+  }
+ },
+ {
+  "image": "img_067.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.4247,
+  "box": [
+   960.0,
+   532.7,
+   464.8,
+   619.9
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_069.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.548,
+  "box": [
+   3120.9,
+   1783.7,
+   79.0,
+   149.2
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_069.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.3043,
+  "box": [
+   3120.2,
+   1787.4,
+   212.2,
+   152.6
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -2.79,
+   "y": -5.904,
+   "z": 1.714
+  }
+ },
+ {
+  "image": "img_073.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8829,
+  "box": [
+   594.2,
+   552.5,
+   685.8,
+   572.3
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.667,
+   "y": -3.776,
+   "z": 1.797
+  }
+ },
+ {
+  "image": "img_073.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.8779,
+  "box": [
+   3602.6,
+   635.0,
+   491.8,
+   517.3
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_073.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.256,
+  "box": [
+   960.0,
+   509.1,
+   616.9,
+   599.0
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_079.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.5625,
+  "box": [
+   964.8,
+   637.5,
+   613.4,
+   560.1
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -5.687,
+   "y": -2.732,
+   "z": 1.794
+  }
+ },
+ {
+  "image": "img_079.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.4544,
+  "box": [
+   788.1,
+   642.6,
+   491.9,
+   533.7
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_082.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.2835,
+  "box": [
+   759.9,
+   1894.5,
+   91.2,
+   106.2
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": {
+   "x": -2.79,
+   "y": -5.9,
+   "z": 1.718
+  }
+ },
+ {
+  "image": "img_082.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.2808,
+  "box": [
+   3078.4,
+   1189.8,
+   121.6,
+   428.3
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ },
+ {
+  "image": "img_093.jpg",
+  "class": "abb_relion_615",
+  "conf": 0.4511,
+  "box": [
+   960.5,
+   2817.4,
+   220.5,
+   213.4
+  ],
+  "ocr": [],
+  "ocr_conf": null,
+  "position": null
+ }
 ]
