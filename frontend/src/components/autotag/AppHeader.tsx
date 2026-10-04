@@ -45,8 +45,8 @@ export function AppHeader() {
         <nav aria-label="Method" className="flex rounded-lg bg-navy-foreground/10 p-1 text-sm">
           {(
             [
-              ["/e57", "A · E57 scan"],
-              ["/image", "B · Image + coordinates"],
+              ["/e57", "E57 scan"],
+              ["/image", "Image + coordinates"],
             ] as const
           ).map(([to, label]) => (
             <Link
