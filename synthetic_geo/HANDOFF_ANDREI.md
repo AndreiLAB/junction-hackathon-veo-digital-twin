@@ -52,7 +52,7 @@ detector alone vs detector + gate, and v2 (15 epochs) vs v3. Be explicit: one si
 python synthetic_geo/export_detections.py --selftest
 python synthetic_geo/export_detections.py --weights <best.pt> --images "<VEO Images>" --cameras "<VEO Images>/cameras.json" --out detections.json
 ```
-Format = `POST /detections`: flat list of `{image, class, conf, box:[x,y,w,h], ocr:[], ocr_conf:null, position:{x,y,z}|null}`; `position` is null if the gate rejected it. `export_detections.py` already exports `vd4_breaker_window` as a device (own position check from the measured window geometry; the backend accepts it). Only the panel class (cabinet evidence) is still not exported.
+Format = `POST /detections`: flat list of `{image, class, conf, box:[x,y,w,h], ocr:[], ocr_conf:null, position:{x,y,z}|null}`; `position` is null if the gate rejected it. `export_detections.py` already exports `vd4_breaker_window` as a device (own position check from the measured window geometry; the backend accepts it). It also exports `unigear_zs2_panel` as cabinet evidence; the panel model (trained on the full face downscaled to 1280) is passed with `--panel-weights <panel_best.pt>`. The backend accepts all three classes.
 
 ## Step 8: push (this is what we need back)
 Push to a **new branch** (e.g. `training-results-v3`), never to `main`. Commit code, `results.md`, the training log, the verified real-eval boxes, `detections.json`, and `best.pt` (< 50 MB). Do not commit photos, the dataset, or Pragati's model/GUI files.

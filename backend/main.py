@@ -23,6 +23,8 @@ DEVICE_CLASSES = {
     # the breaker seen through the window marked "VD4" on the lower door of the UniGear panels: carries the VD4 manual
     "vd4_breaker_window": ("VD4 circuit breaker", "VD4"),
 }
+# the cabinet itself: not a device, but evidence for the cabinet tag (panel_model, source, confidence)
+PANEL_CLASS, PANEL_MODEL = "unigear_zs2_panel", "UniGear ZS2"
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 
 
@@ -109,6 +111,7 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
             "image": storage.url(key) if key else None,
             "image_is_placeholder": bool(r["image_is_placeholder"]) if key else None,
             "read_as": r["read_as"], "sightings": r["sightings"], "evidence_crop": r["evidence_crop"],
+            "panel_model": r["panel_model"], "panel_source": r["panel_source"], "panel_confidence": r["panel_confidence"],
             "documents": knowledge.documents_for_models(kb, json.loads(r["doc_models"])),
             "devices": [device_out(d) for d in devices],
             "created_by": r["created_by"],
@@ -270,8 +273,33 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     def post_detections(items: List[DetectionIn]):
         """Import model output. Each relay becomes a device, attached to the nearest cabinet by position."""
         cabinets = con.execute("SELECT * FROM tags WHERE x IS NOT NULL").fetchall()
-        created, ignored = [], []
+        created, ignored, panels = [], [], []
         for d in items:
+            if d.class_name == PANEL_CLASS:        # cabinet evidence, not a device
+                p, why = d.position, None
+                if p is None:
+                    why = "no position"
+                elif not cabinets:
+                    why = "no cabinet positions loaded"
+                else:
+                    def pdist(c):
+                        return math.dist((c["x"], c["y"], c["z"]), (p.x, p.y, p.z))
+                    near = min(cabinets, key=pdist)
+                    if pdist(near) > s.panel_assign_dist:
+                        why = f"nearest cabinet {near['id']} is {pdist(near):.2f} m away (limit {s.panel_assign_dist} m)"
+                    elif d.conf < s.conf_min:
+                        why = f"confidence {d.conf:.2f} below {s.conf_min}"
+                if why:
+                    panels.append({"image": d.image, "cabinet": None, "applied": False, "reason": why})
+                else:
+                    row = con.execute("SELECT doc_models, panel_confidence FROM tags WHERE id = ?", (near["id"],)).fetchone()
+                    models = json.loads(row["doc_models"])
+                    if PANEL_MODEL not in models:
+                        models.append(PANEL_MODEL)
+                    con.execute("UPDATE tags SET panel_model=?, panel_source='detected', panel_confidence=?, doc_models=? WHERE id=?",
+                                (PANEL_MODEL, max(d.conf, row["panel_confidence"] or 0.0), json.dumps(models), near["id"]))
+                    panels.append({"image": d.image, "cabinet": near["id"], "applied": True, "reason": "panel detected at this cabinet"})
+                continue
             if d.class_name not in DEVICE_CLASSES:
                 ignored.append({"image": d.image, "class": d.class_name, "reason": "not a device class"})
                 continue
@@ -300,7 +328,7 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                  json.dumps(d.box) if d.box else None, int(bool(reasons)), json.dumps(reasons)))
             created.append(device_out(con.execute("SELECT * FROM devices WHERE id = ?", (cur.lastrowid,)).fetchone()))
         con.commit()
-        return {"created": created, "ignored": ignored}
+        return {"created": created, "ignored": ignored, "panels": panels}
 
     @app.get("/devices")
     def list_devices(unassigned: Optional[bool] = None):

@@ -1,12 +1,68 @@
 [
-  {"id": "H05", "name": "H05 - SOLAR 2", "doc_models": ["UniGear ZS2", "VD4"]},
-  {"id": "H04", "name": "H04 - SOLAR 1", "doc_models": []},
-  {"id": "H03", "name": "H03 - METERING", "doc_models": []},
-  {"id": "H02", "name": "H02 - STATION TRANSFORMER", "doc_models": []},
-  {"id": "H01", "name": "H01 - PT1", "doc_models": []},
-  {"id": "VLK", "name": "VLK", "doc_models": []},
-  {"id": "OT1", "name": "OT1", "doc_models": []},
-  {"id": "TSK1", "name": "TSK1", "doc_models": []},
-  {"id": "TSK2", "name": "TSK2", "doc_models": []},
-  {"id": "OKK1", "name": "OKK1", "doc_models": []}
+  {
+    "id": "H05",
+    "name": "H05 - SOLAR 2",
+    "doc_models": [
+      "UniGear ZS2",
+      "VD4"
+    ],
+    "panel_model": "UniGear ZS2"
+  },
+  {
+    "id": "H04",
+    "name": "H04 - SOLAR 1",
+    "doc_models": [
+      "UniGear ZS2"
+    ],
+    "panel_model": "UniGear ZS2"
+  },
+  {
+    "id": "H03",
+    "name": "H03 - METERING",
+    "doc_models": [
+      "UniGear ZS2"
+    ],
+    "panel_model": "UniGear ZS2"
+  },
+  {
+    "id": "H02",
+    "name": "H02 - STATION TRANSFORMER",
+    "doc_models": [
+      "UniGear ZS2"
+    ],
+    "panel_model": "UniGear ZS2"
+  },
+  {
+    "id": "H01",
+    "name": "H01 - PT1",
+    "doc_models": [
+      "UniGear ZS2"
+    ],
+    "panel_model": "UniGear ZS2"
+  },
+  {
+    "id": "VLK",
+    "name": "VLK",
+    "doc_models": []
+  },
+  {
+    "id": "OT1",
+    "name": "OT1",
+    "doc_models": []
+  },
+  {
+    "id": "TSK1",
+    "name": "TSK1",
+    "doc_models": []
+  },
+  {
+    "id": "TSK2",
+    "name": "TSK2",
+    "doc_models": []
+  },
+  {
+    "id": "OKK1",
+    "name": "OKK1",
+    "doc_models": []
+  }
 ]

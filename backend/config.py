@@ -19,6 +19,7 @@ class Settings:
     site: str               # site name returned by GET /tags
     conf_min: float         # detections below this are flagged needs_review
     max_assign_dist: float  # metres: a device farther than this from every cabinet stays unassigned
+    panel_assign_dist: float = 0.6   # metres: a detected panel is matched to the nearest cabinet nameplate within this distance (H01's is 0.17 m off-centre)
 
 
 def load_settings() -> Settings:
@@ -30,4 +31,5 @@ def load_settings() -> Settings:
         site=os.environ.get("VEO_SITE", "eHouse"),
         conf_min=float(os.environ.get("CONF_MIN", "0.5")),
         max_assign_dist=float(os.environ.get("MAX_ASSIGN_DIST", "2.0")),
+        panel_assign_dist=float(os.environ.get("PANEL_ASSIGN_DIST", "0.6")),
     )

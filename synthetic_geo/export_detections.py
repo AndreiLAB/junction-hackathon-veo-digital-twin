@@ -10,7 +10,7 @@ per-class NMS -> location gate (camera pose says where a relay must be) -> backe
 Outputs
   detections.json         what the backend takes in (POST /detections): a list of
                           {"image","class","conf","box":[x,y,w,h],"ocr":[],"ocr_conf":null,"position":{x,y,z}|null}
-                          * classes "abb_relion_615" and "vd4_breaker_window" (other_hmi is evidence for rejection, never a device);
+                          * classes "abb_relion_615", "vd4_breaker_window" (devices) and "unigear_zs2_panel" (cabinet evidence; second model via --panel-weights); other_hmi only rejects look-alikes;
                           * box = x, y of the top-left corner, width, height, in full-image pixels;
                           * position = the detection's centre ray intersected with the relay front plane of the cabinet the gate
                             assigned (a measurement from the detection, not the prediction); null when the gate rejected it,
@@ -34,7 +34,8 @@ from location_gate import Gate  # noqa: E402
 TILE, STRIDE, FRAME = 1280, 960, 4096
 REL_CLASS = "abb_relion_615"
 VD4_CLASS = "vd4_breaker_window"      # exported as a device too (backend: VD4 circuit breaker + VD4 manual)
-EXPORT_CLASSES = (REL_CLASS, VD4_CLASS)
+PANEL_CLASS = "unigear_zs2_panel"      # exported as cabinet evidence (backend: panel_model detected / assumed + confidence), not as a device
+EXPORT_CLASSES = (REL_CLASS, VD4_CLASS, PANEL_CLASS)
 
 
 def tile_origins(size=FRAME, tile=TILE, stride=STRIDE):
@@ -73,6 +74,20 @@ def yolo_predictor(weights, conf, device=None):
         for r in model.predict(tiles, imgsz=TILE, conf=conf, device=device, verbose=False):
             out.append([(names[int(c)], float(s), [float(v) for v in b]) for b, s, c in zip(r.boxes.xyxy.cpu().numpy(), r.boxes.conf.cpu().numpy(), r.boxes.cls.cpu().numpy())])
         return out
+    return predict
+
+
+def panel_predictor(weights, conf, device=None):
+    """Second model: the panel is 2.29 x 1.0 m, so it is trained/run on the FULL face downscaled to 1280 px; boxes are scaled back to full-image pixels."""
+    import cv2
+    from ultralytics import YOLO
+    model = YOLO(weights)
+    k = FRAME / TILE
+
+    def predict(img):
+        r = model.predict(cv2.resize(img, (TILE, TILE), interpolation=cv2.INTER_AREA), imgsz=TILE, conf=conf, device=device, verbose=False)[0]
+        return [(PANEL_CLASS, float(s), [float(v) * k for v in b]) for b, s, c in zip(r.boxes.xyxy.cpu().numpy(), r.boxes.conf.cpu().numpy(), r.boxes.cls.cpu().numpy())
+                if model.names[int(c)] == PANEL_CLASS]
     return predict
 
 
@@ -126,6 +141,42 @@ def vd4_expected(cam, reg):
     return out
 
 
+def panel_expected(cam, reg):
+    """Predicted UniGear panel fronts (measured geometry: relay_geometry.json unigear_panel), clipped to the frame; skipped if < 30% visible."""
+    P = G.GEO.get("unigear_panel")
+    out = []
+    for cid, (ya, yb) in (P or {}).get("y_ranges", {}).items():
+        x = reg[cid]["position"]["x"]
+        pr = [cam.project(np.array(p)) for p in [(x, ya, P["z_max"]), (x, yb, P["z_max"]), (x, yb, P["z_min"]), (x, ya, P["z_min"])]]
+        if any(p is None or p[2] < 0.3 for p in pr):
+            continue
+        xs, ys = [p[0] for p in pr], [p[1] for p in pr]
+        full = (max(xs) - min(xs)) * (max(ys) - min(ys))
+        box = [max(0, min(xs)), max(0, min(ys)), min(FRAME, max(xs)), min(FRAME, max(ys))]
+        if box[2] <= box[0] or box[3] <= box[1] or (box[2] - box[0]) * (box[3] - box[1]) < 0.3 * full:
+            continue
+        out.append({"cabinet": cid, "xyxy": box})
+    return out
+
+
+def assign_panel(cam, reg, dets, min_iou=0.40):
+    """A detected panel is accepted if it overlaps a predicted panel front (IoU >= 0.40); the position is its centre ray on the door plane."""
+    from location_gate import iou
+    exp, used, out = panel_expected(cam, reg), set(), []
+    for c, s, b in sorted(dets, key=lambda d: -d[1]):
+        best, bi = None, 0.0
+        for e in exp:
+            i = iou(b, e["xyxy"])
+            if e["cabinet"] not in used and i > bi:
+                best, bi = e, i
+        ok = bool(best) and bi >= min_iou
+        if ok:
+            used.add(best["cabinet"])
+        out.append({"class": c, "conf": s, "xyxy": b, "cabinet": best["cabinet"] if ok else None, "accepted": ok, "iou": round(bi, 2) if ok else None,
+                    "reason": "matches the predicted UniGear panel front" if ok else "no expected UniGear panel at this position/size: not used as evidence"})
+    return out
+
+
 def assign_vd4(cam, reg, dets, min_iou=0.30, size_ratio=(0.6, 1.6)):
     """Same rule as the relay gate (IoU >= 0.30, width ratio 0.6-1.6), against the predicted VD4 windows."""
     from location_gate import iou
@@ -151,6 +202,7 @@ def build_records(image_name, dets, gate, reg, use_gate=True):
     """YOLO detections of one photo -> (backend records, detail records)."""
     relays = [(c, s, b) for c, s, b in dets if c == REL_CLASS]
     vd4 = [(c, s, b) for c, s, b in dets if c == VD4_CLASS]
+    panels = [(c, s, b) for c, s, b in dets if c == PANEL_CLASS]
     others = [(c, s, b) for c, s, b in dets if c not in EXPORT_CLASSES]
     gated = gate.assign(image_name, [{"class": c, "conf": s, "xyxy": b} for c, s, b in relays]) if use_gate else \
         [{"class": c, "conf": s, "xyxy": b, "cabinet": None, "accepted": False, "reason": "gate disabled"} for c, s, b in relays]
@@ -168,6 +220,12 @@ def build_records(image_name, dets, gate, reg, use_gate=True):
         b = g["xyxy"]
         pos = front_plane_position(cam_, g["cabinet"], b, reg, front=0.0) if g["accepted"] else None
         backend.append({"image": image_name, "class": VD4_CLASS, "conf": round(float(min(max(g["conf"], 0.0), 1.0)), 4),
+                        "box": [round(b[0], 1), round(b[1], 1), round(b[2] - b[0], 1), round(b[3] - b[1], 1)], "ocr": [], "ocr_conf": None, "position": pos})
+        detail.append({**backend[-1], "cabinet": g.get("cabinet"), "gate_accepted": g["accepted"], "gate_reason": g["reason"], "gate_iou": g.get("iou")})
+    for g in (assign_panel(cam_, reg, panels) if use_gate else [{"class": c, "conf": s, "xyxy": b, "cabinet": None, "accepted": False, "reason": "gate disabled"} for c, s, b in panels]):
+        b = g["xyxy"]
+        pos = front_plane_position(cam_, g["cabinet"], b, reg, front=0.0) if g["accepted"] else None
+        backend.append({"image": image_name, "class": PANEL_CLASS, "conf": round(float(min(max(g["conf"], 0.0), 1.0)), 4),
                         "box": [round(b[0], 1), round(b[1], 1), round(b[2] - b[0], 1), round(b[3] - b[1], 1)], "ocr": [], "ocr_conf": None, "position": pos})
         detail.append({**backend[-1], "cabinet": g.get("cabinet"), "gate_accepted": g["accepted"], "gate_reason": g["reason"], "gate_iou": g.get("iou")})
     for c, s, b in others:
@@ -192,6 +250,7 @@ def main():
     ap.add_argument("--cameras", default="VEO Images/cameras.json")
     ap.add_argument("--out", default="detections.json")
     ap.add_argument("--conf", type=float, default=0.25, help="low on purpose: the backend flags low confidence instead of dropping")
+    ap.add_argument("--panel-weights", help="optional second model (unigear_zs2_panel) run on the full face downscaled to 1280")
     ap.add_argument("--device")
     ap.add_argument("--no-gate", action="store_true")
     ap.add_argument("--selftest", action="store_true")
@@ -202,12 +261,13 @@ def main():
         sys.exit("--weights is required (path to best.pt)")
     import cv2
     gate, reg, predict = Gate(a.cameras), load_registry(), yolo_predictor(a.weights, a.conf, a.device)
+    panel_predict = panel_predictor(a.panel_weights, a.conf, a.device) if a.panel_weights else None
     backend, detail = [], []
     for name in sorted(gate.cams):
         img = cv2.imread(str(Path(a.images) / name))
         if img is None:
             sys.exit(f"cannot read {Path(a.images) / name}")
-        b, d = build_records(name, detect_image(img, predict), gate, reg, not a.no_gate)
+        b, d = build_records(name, detect_image(img, predict) + (panel_predict(img) if panel_predict else []), gate, reg, not a.no_gate)
         backend, detail = backend + b, detail + d
         print(f"{name}: {len(b)} relay detections ({sum(1 for r in b if r['position'])} placed by the gate)", flush=True)
     validate(backend)
@@ -223,7 +283,9 @@ def selftest():
     exp = gate.expected(name)[0]
     x0, y0, x1, y1 = exp["xyxy"]
     vexp = vd4_expected(gate.cams[name], reg)[0]["xyxy"]
-    full = [("vd4_breaker_window", 0.85, list(vexp)), ("vd4_breaker_window", 0.6, [vexp[0] + 900, vexp[1] - 700, vexp[2] + 900, vexp[3] - 700]),
+    pexp = panel_expected(gate.cams[name], reg)[0]["xyxy"]
+    full = [(PANEL_CLASS, 0.8, list(pexp)), (PANEL_CLASS, 0.5, [pexp[0] + 1500, pexp[1], pexp[2] + 1500, pexp[3]]),
+            ("vd4_breaker_window", 0.85, list(vexp)), ("vd4_breaker_window", 0.6, [vexp[0] + 900, vexp[1] - 700, vexp[2] + 900, vexp[3] - 700]),
             ("abb_relion_615", 0.9, [x0, y0, x1, y1]), ("abb_relion_615", 0.8, [x0 + 1500, y0 + 900, x1 + 1500, y1 + 900]), ("other_hmi", 0.7, [100, 100, 300, 250])]
     # tile it exactly like the real run, so tiling + NMS + coordinate mapping are exercised
     origins, calls = tile_origins(), []
@@ -241,10 +303,10 @@ def selftest():
     validate(backend)
     print(json.dumps(backend, indent=1))
     ok = [r for r in backend if r["position"]]
-    assert len(backend) == 4 and len(ok) == 2, "expected 2 relay + 2 VD4 detections, one of each accepted"
-    assert sorted(r["class"] for r in ok) == ["abb_relion_615", "vd4_breaker_window"]
+    assert len(backend) == 6 and len(ok) == 3, "expected 2 relay + 2 VD4 + 2 panel detections, one of each accepted"
+    assert sorted(r["class"] for r in ok) == ["abb_relion_615", "unigear_zs2_panel", "vd4_breaker_window"]
     cab = [d for d in detail if d["gate_accepted"]][0]["cabinet"]
-    print(f"selftest OK: relay and VD4 window accepted on {cab} (positions {[r['position'] for r in ok]}); displaced ones have position null; other_hmi not exported")
+    print(f"selftest OK: relay, VD4 window and UniGear panel accepted on {cab} (positions {[r['position'] for r in ok]}); displaced ones have position null; other_hmi not exported")
 
 
 if __name__ == "__main__":

@@ -176,6 +176,7 @@ On first start it creates `data/veo.db` and seeds the 10 cabinets (names only: n
 | `ASSETS_DIR` | `assets` | images, served under `/assets` (git-ignored, share via Drive) |
 | `VEO_SITE` | `eHouse` | site name in `GET /tags` |
 | `CONF_MIN` | `0.5` | detections below this get `needs_review` |
+| `PANEL_ASSIGN_DIST` | `0.6` | metres: a detected UniGear panel is matched to the nearest cabinet within this distance |
 | `MAX_ASSIGN_DIST` | `2.0` | metres; a device farther than this from every cabinet stays unassigned (**unverified default**, tune it) |
 
 ### Endpoints
@@ -197,7 +198,7 @@ On first start it creates `data/veo.db` and seeds the 10 cabinets (names only: n
 | `POST /ask` | JSON `{question, tag_id?, model?, k?}` (`k` 1 to 20, default 5) | `{found, answer, passages[], note}`; passages carry `document, section_path, page_start, page_end, text, link`. `answer` is always `null` (no LLM wired in); `found=false` means "not in the manuals" |
 | `GET /assets/...` | static files | images |
 
-**Detection input** (`POST /detections`). Device classes: `abb_relion_615` (or `relay_front` / `relay_rear`) -> "ABB 615 protection relay" + the REX615 manual; `vd4_breaker_window` -> "VD4 circuit breaker" + the VD4 manual (the breaker seen through the "VD4" window of a UniGear panel). Any other class (`nameplate`, `other_hmi`, `unigear_zs2_panel`) is ignored and reported under `ignored`. `box` is `[x, y, w, h]` in pixels of the **original** image. A detection is flagged `needs_review` (with `review_reasons`) if `conf < CONF_MIN`, if it has no `position`, or if no cabinet is within `MAX_ASSIGN_DIST`. Positions come from the model side (pixel + camera pose); this backend does not compute them yet.
+**Detection input** (`POST /detections`). Device classes: `abb_relion_615` (or `relay_front` / `relay_rear`) -> "ABB 615 protection relay" + the REX615 manual; `vd4_breaker_window` -> "VD4 circuit breaker" + the VD4 manual (the breaker seen through the "VD4" window of a UniGear panel). `unigear_zs2_panel` is **not a device**: it is evidence on the cabinet tag. The nearest cabinet within `PANEL_ASSIGN_DIST` (0.6 m) of the detection's `position` gets `panel_model = "UniGear ZS2"`, `panel_source = "detected"` and `panel_confidence`; weak (< `CONF_MIN`), far or unplaced panel detections are not applied and are listed under `panels` with the reason. Any other class (`nameplate`, `other_hmi`) is ignored and reported under `ignored`. Response: `{created, ignored, panels}`. Cabinet tags carry `panel_model`, `panel_source` (`assumed` for the seeded H01-H05 until detected) and `panel_confidence`; H01-H05 are seeded with the UniGear ZS2 datasheet (H05 also with VD4, as in VEO's own tag). `box` is `[x, y, w, h]` in pixels of the **original** image. A detection is flagged `needs_review` (with `review_reasons`) if `conf < CONF_MIN`, if it has no `position`, or if no cabinet is within `MAX_ASSIGN_DIST`. Positions come from the model side (pixel + camera pose); this backend does not compute them yet.
 
 **Documents** are attached by manual model: a relay device gets the ABB 615 manual; a cabinet gets the models listed in its `doc_models`. Only **H05** is pre-linked (UniGear ZS2 + VD4), because that is all VEO's manual H05 tag showed; the other cabinets have none until set with `PATCH /tags/{id}`.
 

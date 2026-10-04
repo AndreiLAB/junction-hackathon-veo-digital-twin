@@ -34,10 +34,16 @@ def test_health_and_ten_seeded_cabinets(client):
     assert all(t["position"] is None and t["devices"] == [] for t in body["tags"])   # nothing invented
 
 
-def test_h05_has_cabinet_manuals_others_none(client):
+def test_h01_to_h05_get_the_unigear_datasheet_others_none(client):
     h05 = client.get("/tags/H05").json()
-    assert sorted(d["model"] for d in h05["documents"]) == ["UniGear ZS2", "VD4"]
-    assert client.get("/tags/H04").json()["documents"] == []
+    assert sorted(d["model"] for d in h05["documents"]) == ["UniGear ZS2", "VD4"]          # VEO's own H05 tag lists both
+    for cid in ("H01", "H02", "H03", "H04"):
+        t = client.get(f"/tags/{cid}").json()
+        assert [d["model"] for d in t["documents"]] == ["UniGear ZS2"]
+        assert (t["panel_model"], t["panel_source"], t["panel_confidence"]) == ("UniGear ZS2", "assumed", None)
+    for cid in ("VLK", "OT1", "TSK1", "TSK2", "OKK1"):
+        t = client.get(f"/tags/{cid}").json()
+        assert t["documents"] == [] and t["panel_model"] is None
     assert client.get("/tags/NOPE").status_code == 404
 
 
@@ -124,4 +130,33 @@ def test_vd4_without_position_is_flagged_and_other_classes_still_ignored(client)
                                            detection(**{"class": "other_hmi"}),
                                            detection(**{"class": "unigear_zs2_panel"})]).json()
     assert out["created"][0]["needs_review"] and out["created"][0]["review_reasons"] == ["no position"]
-    assert [i["class"] for i in out["ignored"]] == ["other_hmi", "unigear_zs2_panel"]
+    assert [i["class"] for i in out["ignored"]] == ["other_hmi"]                 # the panel class is cabinet evidence, not ignored
+    assert out["panels"][0]["applied"] is False and out["panels"][0]["reason"] == "no cabinet positions loaded"
+
+
+def test_panel_detection_upgrades_assumed_to_detected(client):
+    client.post("/import/cabinets", json=CABINETS)
+    panel = detection(**{"class": "unigear_zs2_panel", "conf": 0.88, "position": {"x": 1.0, "y": 1.2, "z": 1.0}})
+    out = client.post("/detections", json=[panel]).json()
+    assert out["created"] == [] and out["panels"][0] == {"image": "scan_012_skybox_3", "cabinet": "H05", "applied": True, "reason": "panel detected at this cabinet"}
+    t = client.get("/tags/H05").json()
+    assert (t["panel_model"], t["panel_source"], t["panel_confidence"]) == ("UniGear ZS2", "detected", 0.88)
+    assert t["devices"] == []                                                      # not a device
+    assert client.get("/tags/H04").json()["panel_source"] == "assumed"             # untouched
+
+
+def test_panel_detection_is_not_applied_when_weak_far_or_unplaced(client):
+    client.post("/import/cabinets", json=CABINETS)
+    weak = detection(**{"class": "unigear_zs2_panel", "conf": 0.2, "position": {"x": 1.0, "y": 1.0, "z": 1.0}})
+    far = detection(**{"class": "unigear_zs2_panel", "conf": 0.9, "position": {"x": 1.0, "y": 3.0, "z": 1.0}})
+    reasons = [p["reason"] for p in client.post("/detections", json=[weak, far]).json()["panels"]]
+    assert "below" in reasons[0] and "m away" in reasons[1]
+    assert client.get("/tags/H05").json()["panel_source"] == "assumed"
+
+
+def test_panel_detection_on_an_unseeded_cabinet_adds_the_datasheet(client):
+    client.post("/import/cabinets", json=[{"tag": "NEW1", "name": "NEW1", "x": 9.0, "y": 9.0, "z": 1.0, "confidence": 0.9}])
+    panel = detection(**{"class": "unigear_zs2_panel", "conf": 0.9, "position": {"x": 9.1, "y": 9.0, "z": 1.0}})
+    assert client.post("/detections", json=[panel]).json()["panels"][0]["cabinet"] == "NEW1"
+    t = client.get("/tags/NEW1").json()
+    assert t["panel_source"] == "detected" and [d["model"] for d in t["documents"]] == ["UniGear ZS2"]
