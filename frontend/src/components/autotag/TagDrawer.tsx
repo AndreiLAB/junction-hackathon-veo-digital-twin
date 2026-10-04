@@ -126,12 +126,22 @@ function DrawerBody({ initial }: { initial: Tag }) {
       </section>
 
       <section>
-        <h3 className="label-mono">Documents ({tag.documents.length})</h3>
-        {tag.documents.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No documents linked</p>
-        ) : (
-          <DocList docs={tag.documents} onOpen={setDoc} />
-        )}
+        {(() => {
+          const deviceDocs = tag.devices.flatMap((d) => d.documents);
+          const allDocs = [...tag.documents, ...deviceDocs];
+          const uniqueDocsMap = new Map(allDocs.map((d) => [d.id, d]));
+          const uniqueDocs = Array.from(uniqueDocsMap.values());
+          return (
+            <>
+              <h3 className="label-mono">Documents ({uniqueDocs.length})</h3>
+              {uniqueDocs.length === 0 ? (
+                <p className="mt-2 text-sm text-muted-foreground">No documents linked</p>
+              ) : (
+                <DocList docs={uniqueDocs} onOpen={setDoc} />
+              )}
+            </>
+          );
+        })()}
       </section>
 
       <section>
