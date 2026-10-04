@@ -148,6 +148,25 @@ Library use: `from kb_search import search; search(con, question, k=5, model="AB
 
 Serves one **tag per cabinet** (H05, H04, H03, H02, H01, VLK, OT1, TSK1, TSK2, OKK1) with its devices (e.g. the ABB 615 relay), documents (PDFs from the knowledge base) and picture. The existing viewer (Matterport / VEO360) consumes `GET /tags`; write-back to Matterport/VEO360 is **not implemented** (the API and its write permission are unconfirmed).
 
+
+### Frontend API: the two methods and the exports (version 0.2)
+
+The frontend (`frontend/LOVABLE_PROMPT.md`, built in Lovable) uses two methods. CORS is enabled (`CORS_ORIGINS`, default `*`).
+
+| Method and path | Parameters | Returns |
+|---|---|---|
+| `GET /methods` | none | what each method has: `e57.cabinets_found/known`, `image.photos` |
+| `GET /methods/e57/tags` | none | **E57 method**: the cabinets the E57 pipeline already found (no upload; `outputs/physical_tags.csv` is loaded at start), each with tag, picture, manuals; `missing` lists known cabinets it did not find (TSK1) |
+| `GET /photos` | query `category` (none/single/multiple), `cabinet` | **Image method**: the real photos with pose, category and the cabinets they show (503 if `PHOTOS_DIR` is missing) |
+| `GET /photos/{name}/image` | query `w` (128-4096, default 1280) | the photo as a JPEG (boxes elsewhere are in 4096-px photo coordinates) |
+| `POST /locate` | JSON `{photo?, position?{x,y,z}, rotation_wxyz?[w,x,y,z]}` | cabinets in view with their tags, pictures, manuals, **expected** asset boxes (panel, relay, VD4 window, look-alike display) and any detected devices of that photo. **No cabinet in view -> `cabinets: []` and no tag** |
+| `POST /export/manual` (also `GET`) | JSON `{method: e57|image, photo?, position?, rotation_wxyz?, format?: json|csv}` | a manual tagging sheet: what a person creates by hand in the digital twin (name, position, picture, documents); CSV is a file download |
+| `POST /export/matterport` (also `GET`) | same, `format: model_api|sdk` | Matterport-shaped tags: `model_api` = `addMattertag` input + the GraphQL mutation (variables per tag); `sdk` = `Tag.add` descriptors (session only). **Dry run**: nothing is sent; positions are E57 coordinates (not transformed); `<MATTERPORT_MODEL_ID>` / `<FLOOR_ID>` are placeholders; cabinets without a position are listed under `skipped`; unconfirmed fields are listed under `notes` |
+
+New settings: `PHOTOS_DIR` (the VEO photos + `cameras.json`, default `VEO Images`, not in git), `THUMBS_DIR`, `PUBLIC_BASE_URL` (prefix for the picture/PDF links inside exports, default `http://localhost:8000`), `CORS_ORIGINS`, `E57_RESULTS`.
+Geometry for the image method is `backend/asset_geometry.json` (hand-measured, +-0.02 m, a stable copy of `synthetic_geo/relay_geometry.json`). Expected asset boxes are geometry predictions, not detections.
+To let a browser app on another machine reach the backend: `uvicorn backend.main:app --host 0.0.0.0 --port 8000`, and expose it (for example a tunnel) and set `PUBLIC_BASE_URL` to that address.
+
 ### How the model and the backend fit together
 
 ```

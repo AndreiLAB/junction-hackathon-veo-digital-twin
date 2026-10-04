@@ -1,0 +1,340 @@
+{
+ "_note": "Stable copy of the measured asset geometry for the backend (decoupled from synthetic_geo/relay_geometry.json, whose structure may change). All values metres, E57 frame. dy/dz are relative to the cabinet nameplate position; 'front_m' = how far the asset front stands out of the door plane towards the corridor (door normal). Sources: see synthetic_geo/relay_geometry.json, OT1_CORRECTION.md. Hand-measured, +-0.02 m; H01 relay least certain.",
+ "frame_px": 4096,
+ "focal_px": 2048,
+ "corridor_x": [
+  -5.5,
+  -2.3
+ ],
+ "visibility": {
+  "min_depth_m": 0.4,
+  "max_depth_m": 8.0,
+  "margin_px": 150,
+  "max_angle_deg": 70
+ },
+ "cabinets": {
+  "H01": {
+   "name": "H01 - PT1",
+   "position": {
+    "x": -5.728,
+    "y": -5.782,
+    "z": 1.313
+   },
+   "door_normal": [
+    1,
+    0,
+    0
+   ],
+   "panel_model": "UniGear ZS2",
+   "assets": [
+    {
+     "class": "unigear_zs2_panel",
+     "label": "UniGear ZS2 panel",
+     "kind": "panel",
+     "y_min": -6.165,
+     "y_max": -5.053,
+     "z_min": 0.046,
+     "z_max": 2.331
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB REX615 relay",
+     "kind": "device",
+     "dy": -0.07,
+     "dz": 0.55,
+     "w": 0.262,
+     "h": 0.177,
+     "front_m": 0.07
+    }
+   ]
+  },
+  "H02": {
+   "name": "H02 - STATION TRANSFORMER",
+   "position": {
+    "x": -5.746,
+    "y": -4.513,
+    "z": 1.404
+   },
+   "door_normal": [
+    1,
+    0,
+    0
+   ],
+   "panel_model": "UniGear ZS2",
+   "assets": [
+    {
+     "class": "unigear_zs2_panel",
+     "label": "UniGear ZS2 panel",
+     "kind": "panel",
+     "y_min": -5.053,
+     "y_max": -4.025,
+     "z_min": 0.046,
+     "z_max": 2.331
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB REX615 relay",
+     "kind": "device",
+     "dy": -0.271,
+     "dz": 0.451,
+     "w": 0.262,
+     "h": 0.177,
+     "front_m": 0.07
+    },
+    {
+     "class": "vd4_breaker_window",
+     "label": "VD4 breaker (window)",
+     "kind": "device",
+     "dy": 0.074,
+     "dz": -0.273,
+     "w": 0.147,
+     "h": 0.124,
+     "front_m": 0.0
+    }
+   ]
+  },
+  "H03": {
+   "name": "H03 - METERING",
+   "position": {
+    "x": -5.737,
+    "y": -3.518,
+    "z": 1.402
+   },
+   "door_normal": [
+    1,
+    0,
+    0
+   ],
+   "panel_model": "UniGear ZS2",
+   "assets": [
+    {
+     "class": "unigear_zs2_panel",
+     "label": "UniGear ZS2 panel",
+     "kind": "panel",
+     "y_min": -4.025,
+     "y_max": -3.021,
+     "z_min": 0.046,
+     "z_max": 2.331
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB REX615 relay",
+     "kind": "device",
+     "dy": -0.271,
+     "dz": 0.451,
+     "w": 0.262,
+     "h": 0.177,
+     "front_m": 0.07
+    }
+   ]
+  },
+  "H04": {
+   "name": "H04 - SOLAR 1",
+   "position": {
+    "x": -5.757,
+    "y": -2.516,
+    "z": 1.401
+   },
+   "door_normal": [
+    1,
+    0,
+    0
+   ],
+   "panel_model": "UniGear ZS2",
+   "assets": [
+    {
+     "class": "unigear_zs2_panel",
+     "label": "UniGear ZS2 panel",
+     "kind": "panel",
+     "y_min": -3.021,
+     "y_max": -2.037,
+     "z_min": 0.046,
+     "z_max": 2.331
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB REX615 relay",
+     "kind": "device",
+     "dy": -0.271,
+     "dz": 0.451,
+     "w": 0.262,
+     "h": 0.177,
+     "front_m": 0.07
+    },
+    {
+     "class": "vd4_breaker_window",
+     "label": "VD4 breaker (window)",
+     "kind": "device",
+     "dy": 0.074,
+     "dz": -0.273,
+     "w": 0.147,
+     "h": 0.124,
+     "front_m": 0.0
+    }
+   ]
+  },
+  "H05": {
+   "name": "H05 - SOLAR 2",
+   "position": {
+    "x": -5.76,
+    "y": -1.517,
+    "z": 1.401
+   },
+   "door_normal": [
+    1,
+    0,
+    0
+   ],
+   "panel_model": "UniGear ZS2",
+   "assets": [
+    {
+     "class": "unigear_zs2_panel",
+     "label": "UniGear ZS2 panel",
+     "kind": "panel",
+     "y_min": -2.037,
+     "y_max": -1.032,
+     "z_min": 0.046,
+     "z_max": 2.331
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB REX615 relay",
+     "kind": "device",
+     "dy": -0.271,
+     "dz": 0.451,
+     "w": 0.262,
+     "h": 0.177,
+     "front_m": 0.07
+    },
+    {
+     "class": "vd4_breaker_window",
+     "label": "VD4 breaker (window)",
+     "kind": "device",
+     "dy": 0.074,
+     "dz": -0.273,
+     "w": 0.147,
+     "h": 0.124,
+     "front_m": 0.0
+    }
+   ]
+  },
+  "VLK": {
+   "name": "VLK",
+   "position": {
+    "x": -2.718,
+    "y": -6.55,
+    "z": 1.419
+   },
+   "door_normal": [
+    -1,
+    0,
+    0
+   ],
+   "panel_model": null,
+   "assets": []
+  },
+  "OT1": {
+   "name": "OT1",
+   "position": {
+    "x": -2.72,
+    "y": -5.766,
+    "z": 1.579
+   },
+   "door_normal": [
+    -1,
+    0,
+    0
+   ],
+   "panel_model": null,
+   "assets": [
+    {
+     "class": "abb_relion_615",
+     "label": "ABB 615-series relay A",
+     "kind": "device",
+     "dy": -0.155,
+     "dz": 0.145,
+     "w": 0.177,
+     "h": 0.177,
+     "front_m": 0.035
+    },
+    {
+     "class": "abb_relion_615",
+     "label": "ABB 615-series relay B",
+     "kind": "device",
+     "dy": -0.155,
+     "dz": -0.16,
+     "w": 0.177,
+     "h": 0.177,
+     "front_m": 0.035
+    }
+   ]
+  },
+  "TSK1": {
+   "name": "TSK1",
+   "position": {
+    "x": -2.729,
+    "y": -4.878,
+    "z": 1.477
+   },
+   "door_normal": [
+    -1,
+    0,
+    0
+   ],
+   "panel_model": null,
+   "assets": [
+    {
+     "class": "other_hmi",
+     "label": "Cerdex HP display (look-alike, not tagged)",
+     "kind": "lookalike",
+     "dy": -0.241,
+     "dz": 0.086,
+     "w": 0.157,
+     "h": 0.095,
+     "front_m": 0.0
+    }
+   ]
+  },
+  "TSK2": {
+   "name": "TSK2",
+   "position": {
+    "x": -2.726,
+    "y": -4.091,
+    "z": 1.552
+   },
+   "door_normal": [
+    -1,
+    0,
+    0
+   ],
+   "panel_model": null,
+   "assets": [
+    {
+     "class": "other_hmi",
+     "label": "Cerdex HP display (look-alike, not tagged)",
+     "kind": "lookalike",
+     "dy": -0.227,
+     "dz": 0.013,
+     "w": 0.157,
+     "h": 0.095,
+     "front_m": 0.0
+    }
+   ]
+  },
+  "OKK1": {
+   "name": "OKK1",
+   "position": {
+    "x": -2.328,
+    "y": -1.948,
+    "z": 2.361
+   },
+   "door_normal": [
+    -1,
+    0,
+    0
+   ],
+   "panel_model": null,
+   "assets": []
+  }
+ }
+}

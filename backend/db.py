@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS tags (
     doc_models TEXT NOT NULL DEFAULT '[]',
     image_is_placeholder INTEGER NOT NULL DEFAULT 1,
     created_by TEXT NOT NULL DEFAULT 'seed',
-    panel_model TEXT, panel_source TEXT, panel_confidence REAL
+    panel_model TEXT, panel_source TEXT, panel_confidence REAL,
+    e57_found INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS devices (
     id INTEGER PRIMARY KEY AUTOINCREMENT, tag_id TEXT REFERENCES tags(id),
@@ -36,7 +37,7 @@ def connect(path: Path) -> sqlite3.Connection:
 def init(con: sqlite3.Connection, seed: Path) -> None:
     con.executescript(SCHEMA)
     have = {r[1] for r in con.execute("PRAGMA table_info(tags)")}
-    for col, typ in (("panel_model", "TEXT"), ("panel_source", "TEXT"), ("panel_confidence", "REAL")):   # databases created before the panel fields
+    for col, typ in (("panel_model", "TEXT"), ("panel_source", "TEXT"), ("panel_confidence", "REAL"), ("e57_found", "INTEGER NOT NULL DEFAULT 0")):   # databases created before the panel fields
         if col not in have:
             con.execute(f"ALTER TABLE tags ADD COLUMN {col} {typ}")
     for c in json.loads(Path(seed).read_text(encoding="utf-8")):

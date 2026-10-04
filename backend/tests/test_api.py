@@ -10,7 +10,7 @@ from backend.main import create_app
 def client(tmp_path):
     s = Settings(veo_db=tmp_path / "veo.db", knowledge_db=ROOT / "data" / "knowledge.db",
                  docs_dir=ROOT / "docs", assets_dir=tmp_path / "assets", site="test",
-                 conf_min=0.5, max_assign_dist=2.0)
+                 conf_min=0.5, max_assign_dist=2.0, e57_results=None, photos_dir=tmp_path / "no_photos")
     return TestClient(create_app(s))
 
 
