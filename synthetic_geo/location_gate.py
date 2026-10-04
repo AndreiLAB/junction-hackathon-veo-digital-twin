@@ -39,14 +39,14 @@ class Gate:
     def expected(self, image_name):
         cam = self.cams[image_name]
         out = []
-        for cid in ("H01", "H02", "H03", "H04", "H05"):
-            g = G.relay_geometry(cam, cid)
-            if g is None or g["depth"] > G.MAX_RELAY_DEPTH:
-                continue
-            x0, y0, x1, y1 = g["bbox"]
-            if x1 < 0 or y1 < 0 or x0 > self.frame[0] or y0 > self.frame[1]:
-                continue
-            out.append({"cabinet": cid, "xyxy": [round(x0, 1), round(y0, 1), round(x1, 1), round(y1, 1)], "depth_m": round(g["depth"], 2)})
+        for cid in ("H01", "H02", "H03", "H04", "H05", "OT1", "VLK", "OKK1"):
+            for g in G.relay_geometry(cam, cid):
+                if g is None or g["depth"] > G.MAX_RELAY_DEPTH:
+                    continue
+                x0, y0, x1, y1 = g["bbox"]
+                if x1 < 0 or y1 < 0 or x0 > self.frame[0] or y0 > self.frame[1]:
+                    continue
+                out.append({"cabinet": cid, "relay_idx": g.get("relay_idx", 0), "xyxy": [round(x0, 1), round(y0, 1), round(x1, 1), round(y1, 1)], "depth_m": round(g["depth"], 2)})
         return out
 
     def assign(self, image_name, detections):
@@ -62,14 +62,14 @@ class Gate:
             w = d["xyxy"][2] - d["xyxy"][0]
             best, bi = None, 0.0
             for e in exp:
-                if e["cabinet"] in used:
+                if (e["cabinet"], e["relay_idx"]) in used:
                     continue
                 i = iou(d["xyxy"], e["xyxy"])
                 ratio = w / max(1e-6, e["xyxy"][2] - e["xyxy"][0])
                 if i > bi and self.size_ratio[0] <= ratio <= self.size_ratio[1]:
                     best, bi = e, i
             if best and bi >= self.min_iou:
-                used.add(best["cabinet"])
+                used.add((best["cabinet"], best["relay_idx"]))
                 r.update(cabinet=best["cabinet"], accepted=True, iou=round(bi, 2), reason="matches predicted relay position and size")
             else:
                 r["reason"] = "no expected relay at this position/size (look-alike or unknown cabinet): needs_review"

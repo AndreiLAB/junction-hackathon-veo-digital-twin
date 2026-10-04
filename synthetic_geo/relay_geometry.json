@@ -1,36 +1,23 @@
 {
  "relay": {
-  "model": "ABB REX615 (wide case)",
-  "frame_width_m": 0.262,
-  "frame_height_m": 0.177,
-  "source": "REX615 technical manual, Technical data: wide case frame 262 mm x 177 mm (4U); the reference render has aspect 1.49 = 262/177",
+  "model": "ABB REX615",
+  "source": "REX615 technical manual",
   "front_plane_toward_corridor_m": 0.07,
   "body_depth_m": 0.07,
   "geometry_note": "front plane 0.07 m in front of the door plane reproduces the apparent width measured in img_067 (~290 mm at the nameplate depth)"
  },
- "relay_offset_from_nameplate_m": {
-  "H02": {
-   "dy": -0.271,
-   "dz": 0.451
-  },
-  "H03": {
-   "dy": -0.271,
-   "dz": 0.451
-  },
-  "H04": {
-   "dy": -0.271,
-   "dz": 0.451
-  },
-  "H05": {
-   "dy": -0.271,
-   "dz": 0.451
-  },
-  "H01": {
-   "dy": 0.0,
-   "dz": 0.55
-  }
+ "cabinets": {
+  "H02": { "relays": [{"dy": -0.271, "dz": 0.451, "width_m": 0.262, "height_m": 0.177}] },
+  "H03": { "relays": [{"dy": -0.271, "dz": 0.451, "width_m": 0.262, "height_m": 0.177}] },
+  "H04": { "relays": [{"dy": -0.271, "dz": 0.451, "width_m": 0.262, "height_m": 0.177}] },
+  "H05": { "relays": [{"dy": -0.271, "dz": 0.451, "width_m": 0.262, "height_m": 0.177}] },
+  "H01": { "relays": [{"dy": 0.0, "dz": 0.55, "width_m": 0.262, "height_m": 0.177}] },
+  "OT1": { "relays": [
+    {"dy": -0.10, "dz": 0.164, "width_m": 0.262, "height_m": 0.177},
+    {"dy": -0.106, "dz": -0.165, "width_m": 0.177, "height_m": 0.177}
+  ]}
  },
- "relay_offset_source": "H02-H05: read from img_067 and confirmed by eye on H03/H04/H05 at 0.7 m and H03 at 2.0 m. H01: read from img_061 only (less certain: its nameplate position has fewer observations).",
+ "relay_offset_source": "H02-H05: read from img_067 and confirmed by eye on H03/H04/H05 at 0.7 m and H03 at 2.0 m. H01: read from img_061 only. OT1: back-projected from img_043.",
  "other_hmi": {
   "model": "Cerdex display (TSK1/TSK2, ELCON cabinets)",
   "width_m": 0.157,

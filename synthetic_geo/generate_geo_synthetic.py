@@ -80,26 +80,38 @@ def right_vec(cam, p):
 
 
 def relay_geometry(cam, cid, jit=(0, 0, 0)):
+    if cid not in GEO.get("cabinets", GEO.get("relay_offset_from_nameplate_m")): return []
+    out = []
     P = np.array([REG[cid]["position"][a] for a in "xyz"])
     n = door_normal(REG[cid]["position"])
-    off = GEO["relay_offset_from_nameplate_m"][cid]
-    c = P + np.array([0, off["dy"] + jit[0] / 1000, off["dz"] + jit[1] / 1000]) + n * GEO["relay"]["front_plane_toward_corridor_m"]
-    if float(n @ (cam.C - c)) <= 0:
-        return None
-    r, up = right_vec(cam, c), np.array([0, 0, 1.0])
-    if r is None:
-        return None
-    ang = np.radians(jit[2])
-    r, up = r * np.cos(ang) + up * np.sin(ang), up * np.cos(ang) - r * np.sin(ang)
-    w, h, d = GEO["relay"]["frame_width_m"], GEO["relay"]["frame_height_m"], GEO["relay"]["body_depth_m"]
-    front = [c - r * w / 2 + up * h / 2, c + r * w / 2 + up * h / 2, c + r * w / 2 - up * h / 2, c - r * w / 2 - up * h / 2]
-    back = [p - n * d for p in front]
-    pr = [cam.project(p) for p in front + back]
-    if any(p is None or p[2] < 0.3 for p in pr):
-        return None
-    pts = np.array([[p[0], p[1]] for p in pr])
-    return {"cabinet": cid, "front": pts[:4], "back": pts[4:], "depth": pr[0][2],
-            "bbox": (pts[:, 0].min(), pts[:, 1].min(), pts[:, 0].max(), pts[:, 1].max())}
+    
+    c_geo = GEO.get("cabinets", {}).get(cid, {})
+    relays = c_geo.get("relays", [])
+    if not relays:
+        # Fallback to old format if using unpatched geometry
+        off = GEO.get("relay_offset_from_nameplate_m", {}).get(cid)
+        if off:
+            relays = [{"dy": off["dy"], "dz": off["dz"], "width_m": GEO["relay"]["frame_width_m"], "height_m": GEO["relay"]["frame_height_m"]}]
+            
+    for i, rel in enumerate(relays):
+        c = P + np.array([0, rel["dy"] + jit[0] / 1000, rel["dz"] + jit[1] / 1000]) + n * GEO["relay"]["front_plane_toward_corridor_m"]
+        if float(n @ (cam.C - c)) <= 0:
+            continue
+        r, up = right_vec(cam, c), np.array([0, 0, 1.0])
+        if r is None:
+            continue
+        ang = np.radians(jit[2])
+        r, up = r * np.cos(ang) + up * np.sin(ang), up * np.cos(ang) - r * np.sin(ang)
+        w, h, d = rel["width_m"], rel["height_m"], GEO["relay"]["body_depth_m"]
+        front = [c - r * w / 2 + up * h / 2, c + r * w / 2 + up * h / 2, c + r * w / 2 - up * h / 2, c - r * w / 2 - up * h / 2]
+        back = [p - n * d for p in front]
+        pr = [cam.project(p) for p in front + back]
+        if any(p is None or p[2] < 0.3 for p in pr):
+            continue
+        pts = np.array([[p[0], p[1]] for p in pr])
+        out.append({"cabinet": cid, "relay_idx": i, "front": pts[:4], "back": pts[4:], "depth": pr[0][2],
+                "bbox": (pts[:, 0].min(), pts[:, 1].min(), pts[:, 0].max(), pts[:, 1].max())})
+    return out
 
 
 def cerdex_geometry(cam, cid):
@@ -217,7 +229,7 @@ def paste_relay(R, relay, tex, ox, oy, real_mean, real_lap, noise_std, shadow=0.
     if sigma > 0:
         layer = cv2.GaussianBlur(layer, (0, 0), sigma)
         alpha = cv2.GaussianBlur(alpha, (0, 0), min(sigma, 1.0))
-    layer += np.random.RandomState(1).normal(0, noise_std * 0.9, layer.shape).astype(np.float32)
+    layer += np.random.RandomState(1).normal(0, min(noise_std, 10.0) * 0.6, layer.shape).astype(np.float32)
     roi = R[ay0:ay1, ax0:ax1].astype(np.float32)
     # soft contact shadow below the relay (light comes from the ceiling)
     sh_off = max(1, int(0.03 * (ay1 - ay0)))
@@ -288,8 +300,8 @@ def plan(view, cams, a):
         i = int(e["file"][4:7]); cam = cams[i]; split = "val" if e["scan_index"] in HOLDOUT_SCANS else "train"
         if not (-5.5 <= cam.C[0] <= -2.3):
             continue
-        relays = {c: relay_geometry(cam, c) for c in ("H01", "H02", "H03", "H04", "H05")}
-        relays = {k: v for k, v in relays.items() if v and v["depth"] <= MAX_RELAY_DEPTH}
+        relays = {f"{c}_{i}": g for c in ("H01", "H02", "H03", "H04", "H05", "OT1", "VLK", "OKK1") for i, g in enumerate(relay_geometry(cam, c))}
+        relays = {k: v for k, v in relays.items() if v["depth"] <= MAX_RELAY_DEPTH}
         occupied = [g["bbox"] for g in relays.values()] + [g["bbox"] for g in (cerdex_geometry(cam, c) for c in ("TSK1", "TSK2")) if g]
         for gx in (0, 1408, 2816):
             for gy in (0, 1408, 2816):
@@ -360,7 +372,7 @@ def main():
     for k, (split, i, (x0, y0), v, kind, cid) in enumerate(jobs):
         cam = cams[i]
         full = cache.get(f"img_{i:03d}.jpg")
-        relays = [g for g in (relay_geometry(cam, c, POSE_JIT[v % 9]) for c in ("H01", "H02", "H03", "H04", "H05")) if g]
+        relays = [g for c in ("H01", "H02", "H03", "H04", "H05", "OT1", "VLK", "OKK1") for g in relay_geometry(cam, c, POSE_JIT[v % 9])]
         cerdex = [g for g in (cerdex_geometry(cam, c) for c in ("TSK1", "TSK2")) if g]
         tile, boxes = make_sample(full, cam, view[i]["scan_index"], relays, cerdex, x0, y0, v, variants)
         name = f"geo_{split}_{i:03d}_{cid}_{x0}_{y0}_{v:02d}"
@@ -377,7 +389,7 @@ def main():
         if n % 100 == 0:
             print(f"  {n}/{len(jobs)} tiles", flush=True)
     meta.close()
-    (out / "data.yaml").write_text("path: .\ntrain: images/train\nval: images/val\nnames:\n  0: abb_relion_615\n  1: other_hmi\n")
+    (out / "data.yaml").write_text("path: {}\n".format(out.resolve().as_posix()) + "train: images/train\nval: images/val\nnames:\n  0: abb_relion_615\n  1: other_hmi\n")
     json.dump({"tiles": n, "boxes": {f"{s}/{c}": v for (s, c), v in counts.items()}}, open(out / (f"stats_{shard}.json" if shard is not None else "stats.json"), "w"), indent=1)
     print("done:", n, "tiles |", dict(counts))
 
