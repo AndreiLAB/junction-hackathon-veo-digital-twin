@@ -6,12 +6,18 @@ import json
 import math
 from typing import List, Optional
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+import csv as _csv
+from pathlib import Path
+from typing import Literal
+
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import db, knowledge
+from . import methods as M
 from .config import ROOT, Settings, load_settings
 from .storage import LocalStorage
 
@@ -20,7 +26,11 @@ DEVICE_CLASSES = {
     "abb_relion_615": ("ABB 615 protection relay", "ABB 615"),
     "relay_front": ("ABB 615 protection relay", "ABB 615"),
     "relay_rear": ("ABB 615 protection relay", "ABB 615"),
+    # the breaker seen through the window marked "VD4" on the lower door of the UniGear panels: carries the VD4 manual
+    "vd4_breaker_window": ("VD4 circuit breaker", "VD4"),
 }
+# the cabinet itself: not a device, but evidence for the cabinet tag (panel_model, source, confidence)
+PANEL_CLASS, PANEL_MODEL = "unigear_zs2_panel", "UniGear ZS2"
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 
 
@@ -64,6 +74,18 @@ class TagPatch(BaseModel):
     doc_models: Optional[List[str]] = None
 
 
+class LocateIn(BaseModel):
+    """Image method: a photo (pose taken from cameras.json) and/or a pose entered by hand."""
+    photo: Optional[str] = Field(default=None, description="photo name, e.g. img_067.jpg")
+    position: Optional[Position] = Field(default=None, description="camera position x, y, z (E57 coordinates)")
+    rotation_wxyz: Optional[List[float]] = Field(default=None, min_length=4, max_length=4, description="camera orientation quaternion [w, x, y, z]")
+
+
+class ExportIn(LocateIn):
+    method: Literal["e57", "image"] = "e57"
+    format: Optional[str] = Field(default=None, description="manual: json|csv; matterport: model_api|sdk")
+
+
 class AskIn(BaseModel):
     question: str
     tag_id: Optional[str] = Field(default=None, description="limit the search to this cabinet's documents")
@@ -82,7 +104,9 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     kb = knowledge.open_ro(s.knowledge_db)
     storage = LocalStorage(s.assets_dir)
 
-    app = FastAPI(title="VEO360 auto-tagging backend", version="0.1.0")
+    app = FastAPI(title="VEO360 auto-tagging backend", version="0.2.0")
+    app.add_middleware(CORSMiddleware, allow_origins=list(s.cors_origins), allow_methods=["*"], allow_headers=["*"])
+    cameras = M.load_cameras(s.photos_dir)
     app.mount("/assets", StaticFiles(directory=s.assets_dir, check_dir=False), name="assets")
 
     # ---------- serializers ----------
@@ -107,6 +131,8 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
             "image": storage.url(key) if key else None,
             "image_is_placeholder": bool(r["image_is_placeholder"]) if key else None,
             "read_as": r["read_as"], "sightings": r["sightings"], "evidence_crop": r["evidence_crop"],
+            "panel_model": r["panel_model"], "panel_source": r["panel_source"], "panel_confidence": r["panel_confidence"],
+            "found_by_e57": bool(r["e57_found"]),
             "documents": knowledge.documents_for_models(kb, json.loads(r["doc_models"])),
             "devices": [device_out(d) for d in devices],
             "created_by": r["created_by"],
@@ -239,9 +265,7 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
             "devices_added": devices_added
         }
 
-    @app.post("/import/cabinets")
-    def import_cabinets(items: List[CabinetIn]):
-        """Load cabinet positions/confidence from find_labels.py's tags.json. Unknown ids are added."""
+    def apply_cabinets(items):
         updated, added = 0, 0
         for c in items:
             if con.execute("SELECT 1 FROM tags WHERE id = ?", (c.tag,)).fetchone():
@@ -250,11 +274,15 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                 con.execute("INSERT INTO tags(id, name, created_by) VALUES (?,?,'import')", (c.tag, c.name or c.tag))
                 added += 1
             review = c.confidence is not None and c.confidence < s.conf_min
-            con.execute("UPDATE tags SET x=?, y=?, z=?, confidence=?, sightings=?, read_as=?, evidence_crop=?, "
-                        "needs_review=? WHERE id=?",
+            con.execute("UPDATE tags SET x=?, y=?, z=?, confidence=?, sightings=?, read_as=?, evidence_crop=?, needs_review=?, e57_found=1 WHERE id=?",
                         (c.x, c.y, c.z, c.confidence, c.sightings, c.read_as, c.evidence_crop, int(review), c.tag))
         con.commit()
         return {"updated": updated, "added": added}
+
+    @app.post("/import/cabinets")
+    def import_cabinets(items: List[CabinetIn]):
+        """Load cabinet positions/confidence found by the E57 pipeline (find_labels.py tags.json, or physical_tags.csv). Marks them found_by_e57."""
+        return apply_cabinets(items)
 
     @app.post("/detect")
     async def detect(file: UploadFile = File(...), image_name: Optional[str] = None):
@@ -268,8 +296,33 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     def post_detections(items: List[DetectionIn]):
         """Import model output. Each relay becomes a device, attached to the nearest cabinet by position."""
         cabinets = con.execute("SELECT * FROM tags WHERE x IS NOT NULL").fetchall()
-        created, ignored = [], []
+        created, ignored, panels = [], [], []
         for d in items:
+            if d.class_name == PANEL_CLASS:        # cabinet evidence, not a device
+                p, why = d.position, None
+                if p is None:
+                    why = "no position"
+                elif not cabinets:
+                    why = "no cabinet positions loaded"
+                else:
+                    def pdist(c):
+                        return math.dist((c["x"], c["y"], c["z"]), (p.x, p.y, p.z))
+                    near = min(cabinets, key=pdist)
+                    if pdist(near) > s.panel_assign_dist:
+                        why = f"nearest cabinet {near['id']} is {pdist(near):.2f} m away (limit {s.panel_assign_dist} m)"
+                    elif d.conf < s.conf_min:
+                        why = f"confidence {d.conf:.2f} below {s.conf_min}"
+                if why:
+                    panels.append({"image": d.image, "cabinet": None, "applied": False, "reason": why})
+                else:
+                    row = con.execute("SELECT doc_models, panel_confidence FROM tags WHERE id = ?", (near["id"],)).fetchone()
+                    models = json.loads(row["doc_models"])
+                    if PANEL_MODEL not in models:
+                        models.append(PANEL_MODEL)
+                    con.execute("UPDATE tags SET panel_model=?, panel_source='detected', panel_confidence=?, doc_models=? WHERE id=?",
+                                (PANEL_MODEL, max(d.conf, row["panel_confidence"] or 0.0), json.dumps(models), near["id"]))
+                    panels.append({"image": d.image, "cabinet": near["id"], "applied": True, "reason": "panel detected at this cabinet"})
+                continue
             if d.class_name not in DEVICE_CLASSES:
                 ignored.append({"image": d.image, "class": d.class_name, "reason": "not a device class"})
                 continue
@@ -298,7 +351,7 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                  json.dumps(d.box) if d.box else None, int(bool(reasons)), json.dumps(reasons)))
             created.append(device_out(con.execute("SELECT * FROM devices WHERE id = ?", (cur.lastrowid,)).fetchone()))
         con.commit()
-        return {"created": created, "ignored": ignored}
+        return {"created": created, "ignored": ignored, "panels": panels}
 
     @app.get("/devices")
     def list_devices(unassigned: Optional[bool] = None):
@@ -348,6 +401,153 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
         } for h in hits]
         return {"found": bool(passages), "answer": None, "passages": passages,
                 "note": None if passages else "not found in the manuals"}
+
+    # ---------------------------------------------------------------- the two methods, as the frontend uses them
+    def e57_rows():
+        return con.execute("SELECT * FROM tags WHERE e57_found = 1 ORDER BY rowid").fetchall()
+
+    @app.get("/methods")
+    def methods_info():
+        found = len(e57_rows())
+        total = con.execute("SELECT COUNT(*) FROM tags").fetchone()[0]
+        return {
+            "e57": {"available": found > 0, "cabinets_found": found, "cabinets_known": total,
+                    "description": "Cabinets found by the E57 pipeline (the scan is already processed; no upload)."},
+            "image": {"available": bool(cameras), "photos": len(cameras), "manual_pose": True,
+                      "description": "A photo plus the pose it was taken from. Cabinets in view are found by geometry; no cabinet in view means no tag."}}
+
+    @app.get("/methods/e57/tags")
+    def e57_tags():
+        """E57 method: every cabinet the E57 pipeline found, with tag, picture and manuals. `missing` = known cabinets it did not find."""
+        tags = [tag_out(r) for r in e57_rows()]
+        missing = [r["id"] for r in con.execute("SELECT id FROM tags WHERE e57_found = 0 ORDER BY rowid")]
+        return {"method": "e57", "site": s.site, "count": len(tags), "missing": missing,
+                "note": "Positions are E57 coordinates. Devices appear only when a real detection has been imported.", "tags": tags}
+
+    def photo_list():
+        return [M.photo_summary(e) for e in cameras.values()]
+
+    @app.get("/photos")
+    def list_photos(category: Optional[Literal["none", "single", "multiple"]] = None, cabinet: Optional[str] = None):
+        """Image method: the available photos with their pose and which cabinets they show."""
+        if not cameras:
+            raise HTTPException(503, "photos are not available on this server (PHOTOS_DIR with cameras.json is missing)")
+        ps = photo_list()
+        if category:
+            ps = [p for p in ps if p["category"] == category]
+        if cabinet:
+            ps = [p for p in ps if cabinet in p["cabinets"]]
+        return {"count": len(ps), "photos": ps}
+
+    @app.get("/photos/{name}/image")
+    def photo_image(name: str, w: int = Query(1280, ge=128, le=4096)):
+        """The photo as a JPEG no wider than w px. Boxes in other responses are in 4096-px photo coordinates: scale them by shown_width / 4096."""
+        if name not in cameras or not (s.photos_dir / name).is_file():
+            raise HTTPException(404, f"photo {name} not found")
+        cache = s.thumbs_dir / f"{Path(name).stem}_{w}.jpg"
+        if not cache.is_file():
+            from PIL import Image
+            im = Image.open(s.photos_dir / name).convert("RGB")
+            im.thumbnail((w, w))
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            im.save(cache, "JPEG", quality=85)
+        return FileResponse(cache, media_type="image/jpeg")
+
+    def locate_view(body: LocateIn):
+        if body.photo:
+            e = cameras.get(body.photo)
+            if e is None:
+                raise HTTPException(404, f"photo {body.photo} not found")
+            pos = [body.position.x, body.position.y, body.position.z] if body.position else list(e["position"])
+            rot = list(body.rotation_wxyz) if body.rotation_wxyz else list(e["rotation_wxyz"])
+        elif body.position is not None and body.rotation_wxyz is not None:
+            pos, rot = [body.position.x, body.position.y, body.position.z], list(body.rotation_wxyz)
+        else:
+            raise HTTPException(422, "give a photo name, or both position and rotation_wxyz")
+        try:
+            cam = M.Cam(pos, rot)
+        except ValueError as err:
+            raise HTTPException(422, str(err))
+        vis, why = M.visible_cabinets(cam)
+        cabs = []
+        for v in vis:
+            cid = v["cabinet"]
+            row = con.execute("SELECT * FROM tags WHERE id = ?", (cid,)).fetchone()
+            if row is None:
+                continue
+            det = []
+            if body.photo:
+                det = [device_out(d) for d in con.execute("SELECT * FROM devices WHERE tag_id = ? AND source_image = ? ORDER BY id", (cid, body.photo)).fetchall()]
+            for d in det:
+                b = d["source"]["box"]
+                d["xyxy"] = [b[0], b[1], b[0] + b[2], b[1] + b[3]] if b else None
+            cabs.append({"tag": tag_out(row), "view": v, "assets": M.expected_assets(cam, cid), "detected_devices": det})
+        cat = "none" if not cabs else "single" if len(cabs) == 1 else "multiple"
+        msg = (why or "No cabinet in view: no tag is created for this position.") if not cabs else f"{len(cabs)} cabinet{'s' if len(cabs) > 1 else ''} in view"
+        return {"method": "image", "photo": body.photo,
+                "image_url": f"/photos/{body.photo}/image" if body.photo and body.photo in cameras else None,
+                "pose": {"position": dict(zip("xyz", pos)), "rotation_wxyz": rot}, "category": cat, "message": msg, "cabinets": cabs,
+                "frame_px": M.FRAME,
+                "note": "assets are EXPECTED positions from measured geometry (status 'expected'); detected_devices are real model detections once imported"}
+
+    @app.post("/locate")
+    def locate(body: LocateIn):
+        """Image method: which cabinets does this photo / pose show, with their tags, pictures, manuals and where each asset must appear."""
+        return locate_view(body)
+
+    # ---------------------------------------------------------------- exports
+    def export_tags(body: ExportIn):
+        if body.method == "e57":
+            return [tag_out(r) for r in e57_rows()], None
+        loc = locate_view(body)
+        return [c["tag"] for c in loc["cabinets"]], loc["message"]
+
+    def run_manual(body: ExportIn):
+        fmt = (body.format or "json").lower()
+        if fmt not in ("json", "csv"):
+            raise HTTPException(422, "format must be json or csv")
+        tags, note = export_tags(body)
+        sheet = M.manual_sheet(tags, body.method, s.public_base_url, note)
+        if fmt == "csv":
+            return Response(M.manual_csv(sheet), media_type="text/csv",
+                            headers={"Content-Disposition": f'attachment; filename="manual_tagging_{body.method}.csv"'})
+        return sheet
+
+    def run_matterport(body: ExportIn):
+        fmt = (body.format or "model_api").lower()
+        if fmt not in ("model_api", "sdk"):
+            raise HTTPException(422, "format must be model_api or sdk")
+        tags, note = export_tags(body)
+        out = M.matterport_export(tags, body.method, s.public_base_url, fmt)
+        out["message"] = note
+        return out
+
+    @app.post("/export/manual")
+    def export_manual(body: ExportIn):
+        """A manual tagging sheet for the selected method: what a person must create by hand in the digital twin (JSON, or CSV with format=csv)."""
+        return run_manual(body)
+
+    @app.get("/export/manual")
+    def export_manual_get(method: Literal["e57", "image"] = "e57", photo: Optional[str] = None, format: Optional[str] = None):
+        return run_manual(ExportIn(method=method, photo=photo, format=format))
+
+    @app.post("/export/matterport")
+    def export_matterport(body: ExportIn):
+        """Tags in Matterport's shape (format=model_api: addMattertag input + GraphQL mutation; format=sdk: Tag.add descriptors). Dry run: nothing is sent."""
+        return run_matterport(body)
+
+    @app.get("/export/matterport")
+    def export_matterport_get(method: Literal["e57", "image"] = "e57", photo: Optional[str] = None, format: Optional[str] = None):
+        return run_matterport(ExportIn(method=method, photo=photo, format=format))
+
+    # what the E57 pipeline already found is loaded once at start (no upload needed)
+    if s.e57_results and Path(s.e57_results).is_file() and not e57_rows():
+        best = {}
+        for r in _csv.DictReader(open(s.e57_results, encoding="utf-8")):
+            if r.get("type") == "cubicle" and (r["label"] not in best or float(r["confidence"]) > float(best[r["label"]]["confidence"])):
+                best[r["label"]] = r
+        apply_cabinets([CabinetIn(tag=k, x=float(v["x"]), y=float(v["y"]), z=float(v["z"]), confidence=float(v["confidence"]),
+                                  sightings=int(float(v["observation_count"]))) for k, v in best.items()])
 
     return app
 

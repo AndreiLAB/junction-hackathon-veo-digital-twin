@@ -19,6 +19,12 @@ class Settings:
     site: str               # site name returned by GET /tags
     conf_min: float         # detections below this are flagged needs_review
     max_assign_dist: float  # metres: a device farther than this from every cabinet stays unassigned
+    panel_assign_dist: float = 0.6
+    photos_dir: Path = ROOT / "VEO Images"        # the real cube-face photos + cameras.json (not in git); image method needs it
+    thumbs_dir: Path = ROOT / "data" / "thumbs"
+    public_base_url: str = "http://localhost:8000"  # prefix for the picture/PDF links inside exports (Matterport/manual sheet)
+    cors_origins: tuple = ("*",)                   # browser frontends (Lovable) need CORS
+    e57_results: Path = ROOT / "outputs" / "physical_tags.csv"   # what the E57 pipeline already found (no upload needed)   # metres: a detected panel is matched to the nearest cabinet nameplate within this distance (H01's is 0.17 m off-centre)
 
 
 def load_settings() -> Settings:
@@ -30,4 +36,10 @@ def load_settings() -> Settings:
         site=os.environ.get("VEO_SITE", "eHouse"),
         conf_min=float(os.environ.get("CONF_MIN", "0.5")),
         max_assign_dist=float(os.environ.get("MAX_ASSIGN_DIST", "2.0")),
+        panel_assign_dist=float(os.environ.get("PANEL_ASSIGN_DIST", "0.6")),
+        photos_dir=_path("PHOTOS_DIR", "VEO Images"),
+        thumbs_dir=_path("THUMBS_DIR", "data/thumbs"),
+        public_base_url=os.environ.get("PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/"),
+        cors_origins=tuple(o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",")),
+        e57_results=_path("E57_RESULTS", "outputs/physical_tags.csv"),
     )

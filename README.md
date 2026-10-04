@@ -148,6 +148,25 @@ Library use: `from kb_search import search; search(con, question, k=5, model="AB
 
 Serves one **tag per cabinet** (H05, H04, H03, H02, H01, VLK, OT1, TSK1, TSK2, OKK1) with its devices (e.g. the ABB 615 relay), documents (PDFs from the knowledge base) and picture. The existing viewer (Matterport / VEO360) consumes `GET /tags`; write-back to Matterport/VEO360 is **not implemented** (the API and its write permission are unconfirmed).
 
+
+### Frontend API: the two methods and the exports (version 0.2)
+
+The frontend (`frontend/LOVABLE_PROMPT.md`, built in Lovable) uses two methods. CORS is enabled (`CORS_ORIGINS`, default `*`).
+
+| Method and path | Parameters | Returns |
+|---|---|---|
+| `GET /methods` | none | what each method has: `e57.cabinets_found/known`, `image.photos` |
+| `GET /methods/e57/tags` | none | **E57 method**: the cabinets the E57 pipeline already found (no upload; `outputs/physical_tags.csv` is loaded at start), each with tag, picture, manuals; `missing` lists known cabinets it did not find (TSK1) |
+| `GET /photos` | query `category` (none/single/multiple), `cabinet` | **Image method**: the real photos with pose, category and the cabinets they show (503 if `PHOTOS_DIR` is missing) |
+| `GET /photos/{name}/image` | query `w` (128-4096, default 1280) | the photo as a JPEG (boxes elsewhere are in 4096-px photo coordinates) |
+| `POST /locate` | JSON `{photo?, position?{x,y,z}, rotation_wxyz?[w,x,y,z]}` | cabinets in view with their tags, pictures, manuals, **expected** asset boxes (panel, relay, VD4 window, look-alike display) and any detected devices of that photo. **No cabinet in view -> `cabinets: []` and no tag** |
+| `POST /export/manual` (also `GET`) | JSON `{method: e57|image, photo?, position?, rotation_wxyz?, format?: json|csv}` | a manual tagging sheet: what a person creates by hand in the digital twin (name, position, picture, documents); CSV is a file download |
+| `POST /export/matterport` (also `GET`) | same, `format: model_api|sdk` | Matterport-shaped tags: `model_api` = `addMattertag` input + the GraphQL mutation (variables per tag); `sdk` = `Tag.add` descriptors (session only). **Dry run**: nothing is sent; positions are E57 coordinates (not transformed); `<MATTERPORT_MODEL_ID>` / `<FLOOR_ID>` are placeholders; cabinets without a position are listed under `skipped`; unconfirmed fields are listed under `notes` |
+
+New settings: `PHOTOS_DIR` (the VEO photos + `cameras.json`, default `VEO Images`, not in git), `THUMBS_DIR`, `PUBLIC_BASE_URL` (prefix for the picture/PDF links inside exports, default `http://localhost:8000`), `CORS_ORIGINS`, `E57_RESULTS`.
+Geometry for the image method is `backend/asset_geometry.json` (hand-measured, +-0.02 m, a stable copy of `synthetic_geo/relay_geometry.json`). Expected asset boxes are geometry predictions, not detections.
+To let a browser app on another machine reach the backend: `uvicorn backend.main:app --host 0.0.0.0 --port 8000`, and expose it (for example a tunnel) and set `PUBLIC_BASE_URL` to that address.
+
 ### How the model and the backend fit together
 
 ```
@@ -176,6 +195,7 @@ On first start it creates `data/veo.db` and seeds the 10 cabinets (names only: n
 | `ASSETS_DIR` | `assets` | images, served under `/assets` (git-ignored, share via Drive) |
 | `VEO_SITE` | `eHouse` | site name in `GET /tags` |
 | `CONF_MIN` | `0.5` | detections below this get `needs_review` |
+| `PANEL_ASSIGN_DIST` | `0.6` | metres: a detected UniGear panel is matched to the nearest cabinet within this distance |
 | `MAX_ASSIGN_DIST` | `2.0` | metres; a device farther than this from every cabinet stays unassigned (**unverified default**, tune it) |
 
 ### Endpoints
@@ -197,7 +217,7 @@ On first start it creates `data/veo.db` and seeds the 10 cabinets (names only: n
 | `POST /ask` | JSON `{question, tag_id?, model?, k?}` (`k` 1 to 20, default 5) | `{found, answer, passages[], note}`; passages carry `document, section_path, page_start, page_end, text, link`. `answer` is always `null` (no LLM wired in); `found=false` means "not in the manuals" |
 | `GET /assets/...` | static files | images |
 
-**Detection input** (`POST /detections`). `class` is `abb_relion_615` (or `relay_front` / `relay_rear`); `nameplate` is ignored (it is OCR evidence, not a device). `box` is `[x, y, w, h]` in pixels of the **original** image. A detection is flagged `needs_review` (with `review_reasons`) if `conf < CONF_MIN`, if it has no `position`, or if no cabinet is within `MAX_ASSIGN_DIST`. Positions come from the model side (pixel + camera pose); this backend does not compute them yet.
+**Detection input** (`POST /detections`). Device classes: `abb_relion_615` (or `relay_front` / `relay_rear`) -> "ABB 615 protection relay" + the REX615 manual; `vd4_breaker_window` -> "VD4 circuit breaker" + the VD4 manual (the breaker seen through the "VD4" window of a UniGear panel). `unigear_zs2_panel` is **not a device**: it is evidence on the cabinet tag. The nearest cabinet within `PANEL_ASSIGN_DIST` (0.6 m) of the detection's `position` gets `panel_model = "UniGear ZS2"`, `panel_source = "detected"` and `panel_confidence`; weak (< `CONF_MIN`), far or unplaced panel detections are not applied and are listed under `panels` with the reason. Any other class (`nameplate`, `other_hmi`) is ignored and reported under `ignored`. Response: `{created, ignored, panels}`. Cabinet tags carry `panel_model`, `panel_source` (`assumed` for the seeded H01-H05 until detected) and `panel_confidence`; H01-H05 are seeded with the UniGear ZS2 datasheet (H05 also with VD4, as in VEO's own tag). `box` is `[x, y, w, h]` in pixels of the **original** image. A detection is flagged `needs_review` (with `review_reasons`) if `conf < CONF_MIN`, if it has no `position`, or if no cabinet is within `MAX_ASSIGN_DIST`. Positions come from the model side (pixel + camera pose); this backend does not compute them yet.
 
 **Documents** are attached by manual model: a relay device gets the ABB 615 manual; a cabinet gets the models listed in its `doc_models`. Only **H05** is pre-linked (UniGear ZS2 + VD4), because that is all VEO's manual H05 tag showed; the other cabinets have none until set with `PATCH /tags/{id}`.
 

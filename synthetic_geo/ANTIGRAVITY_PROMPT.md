@@ -58,8 +58,7 @@ Row VLK/OT1/TSK1/TSK2/OKK1 is at x ~ -2.7; its doors face **-x**. Along the H ro
 ## 5. Measured relay and display geometry (`synthetic_geo/relay_geometry.json`)
 * **Relay = REX615 wide case:** frame **0.262 m wide x 0.177 m high** (manual: wide case 262 mm, 4U = 177 mm; the reference render's aspect 1.49 = 262/177).
   Body depth 0.07 m; **front plane 0.07 m in front of the door plane**, towards the corridor. (This reproduces the ~290 mm apparent width measured in img_067.)
-* **Relay centre relative to the cabinet nameplate position, world metres:** H02-H05: `dy = -0.271, dz = +0.451`; **H01: `dy = 0.0, dz = +0.55`
-  (read from ONE image, img_061: least certain)**. dx = 0 (plane of the door).
+* **Relay centre relative to the cabinet nameplate position, world metres:** H02-H05: `dy = -0.271, dz = +0.451`; **H01: `dy = -0.07 (+-0.05), dz = +0.55`** (updated from 0.0; H01's nameplate is 0.17 m left of its panel centre; two photos bracket it; still least certain). dx = 0 (plane of the door).
   Confirmed by eye on H02/H03/H04/H05 at 0.7 m and H03 at 2.0 m (img_067, 073, 079, 085, 025). Automatic template matching FAILED (NCC 0.3-0.4): do not use it.
 * **Relay corners (3D):** `c = P_nameplate + [0, dy, dz] + n*0.07` with n = door normal (+x for H row); right-vector r = +/-y chosen per camera so that u increases;
   up = +z; front corners = `c +/- r*w/2 +/- up*h/2`; back corners = front - n*0.07. Project all 8; bbox = bbox of the 8 pixels.
@@ -68,6 +67,29 @@ Row VLK/OT1/TSK1/TSK2/OKK1 is at x ~ -2.7; its doors face **-x**. Along the H ro
 * **Valid cameras:** corridor only, camera x in **[-5.5, -2.3]**. Scan 1 (camera at the origin, behind a steel door) and scans 17-18 look through walls: excluded.
 * Visibility rule (`make_views.py`): depth 0.4-8.0 m, label inside the frame with a 150 px margin, view angle (door normal vs camera) <= 70 degrees. Occlusion is NOT checked.
   Relay used for training only if depth <= 6.2 m. Real coverage: **57 (image, H-cabinet) pairs from 28 images**, depth 0.69-6.14 m, angles 4-70 degrees.
+
+## 5b. More assets on the cabinet (v2 scope, decided): panel, relay, breaker
+The mentors require the technique to detect OTHER assets on the cabinet, and the UniGear cabinet itself must be identified. Each H cabinet carries three assets, each with a manual we already hold:
+
+| Asset | YOLO class | How its labels are made | Manual (knowledge base model) |
+|---|---|---|---|
+| UniGear ZS2 panel (the cabinet) | `unigear_zs2_panel` | geometry only, on REAL photos (panels are real; nothing synthetic is inserted) | UniGear ZS2 instruction manual |
+| ABB REX615 relay | `abb_relion_615` | remove-and-replace with the render (as in section 6) | REX615 technical manual |
+| VD4 breaker, seen through the window marked "VD4" | `vd4_breaker_window` | geometry only, on REAL photos | VD4 manual |
+| Cerdex HP display (TSK1/TSK2) | `other_hmi` (may be renamed `cerdex_hmi`; promote it from a negative to a real asset, no manual exists) | geometry only | none |
+
+v2 classes: `0 abb_relion_615, 1 other_hmi, 2 unigear_zs2_panel, 3 vd4_breaker_window`. (H05's own VEO tag lists exactly these three manuals: REX615, UniGear ZS2, VD4.)
+
+**Panel geometry (measured from img_033, verified on img_033/052/025/045; `relay_geometry.json: unigear_panel`):** the panel front is a rectangle on the door plane `x = cabinet x`, z from **0.046** to **2.331** m (height 2.285 m), y ranges
+{"H01": [-6.165, -5.053], "H02": [-5.053, -4.025], "H03": [-4.025, -3.021], "H04": [-3.021, -2.037], "H05": [-2.037, -1.032]} (widths {"H01": 1.112, "H02": 1.028, "H03": 1.004, "H04": 0.984, "H05": 1.005}; H01 is wider, H05's width = mean of H02-H04). **Scale:** a panel is 2.29 x 1.0 m and does not fit a 1280 native tile unless the camera is far, so train and infer
+this class on the FULL FACE downscaled to 1280 px (scale 0.3125), as a second model or a second image set; the relay, VD4 window and Cerdex stay on native 1280 tiles.
+**VD4 window (`relay_geometry.json: vd4_breaker_window`):** centre = nameplate + (dy 0.074, dz -0.273) m, size 0.147 x 0.124 m; **present on H02, H04, H05; ABSENT on H03** (a warning triangle is at that position: a different panel type); **H01's window is at another position: measure it.** About 120 px wide in a 4096 photo at 2.4 m.
+**Presence and position are per cabinet**, so the registry lists assets per cabinet (`cabinet_registry.json: assets`); never assume every H cabinet has every asset.
+
+**Identifying the UniGear cabinet:** `panel_model = "UniGear ZS2"` when the panel detector fires on that cabinet (and/or the word "UniGear" and the ABB logo are read on the upper-left of the door by OCR); otherwise keep the registry rule but mark it **assumed**.
+The ELCON cabinets (TSK1/TSK2, louvered doors) are visibly different: negatives for the panel class. **Assumption (the mentors cannot be asked): the 36 kV variant is installed**, because the supplied manual (Rev 02) is the 36 kV one. Keep it flagged as assumed in data and slides.
+**Backend/exporter implication:** `backend/main.py DEVICE_CLASSES` now has `vd4_breaker_window` (-> VD4 circuit breaker + VD4 manual) and `export_detections.py` exports it as a device (position check from the measured window geometry; absent on H03, unmeasured on H01 so those get `position: null`). `export_detections.py` also exports `unigear_zs2_panel` as cabinet evidence (second model on the full face downscaled to 1280: `--panel-weights`), and the backend turns it into `panel_model` detected/assumed + confidence on the cabinet tag. Nothing left to build for the panel except training the model
+(`panel_model`, `detected`/`assumed`, confidence), through the same gate logic (position check per cabinet).
 
 ## 6. Dataset design (`generate_geo_synthetic.py`; do not change without telling the user)
 **Every sample = a 1280x1280 tile of a REAL photo** in which (a) all real H01-H05 relays are removed (OpenCV Telea inpaint at half resolution, mask dilated by
@@ -122,10 +144,11 @@ Report: precision, recall, AP50 for `abb_relion_615`; **how often the TSK1/TSK2 
 detector + geometry are shown separately (the gate must not hide model weakness). If time allows, a baseline trained only on the 4 raw renders. State clearly that everything comes
 from **one site**, so the numbers show in-site performance, not generalisation to other sites. Include 2-3 failure cases (images) and how `needs_review` handles them.
 
-## 12. Hand-off to the backend
-Produce `detections.json` for the 108 images: a list of `{"image": "img_067.jpg", "class": "abb_relion_615", "conf": 0.91, "box": [x, y, w, h], "ocr": [], "ocr_conf": null, "position": null}`
-(`box` in FULL-image pixels = tile detections + tile origin, merged with NMS). The FastAPI backend ingests it at `POST /detections`; `class` must be exactly `abb_relion_615`
-(`other_hmi` is ignored). Cabinet assignment and `needs_review` are done by the backend and the gate.
+## 12. Hand-off to the backend (the model's output IS the backend's input)
+Run `python synthetic_geo/export_detections.py --weights <best.pt> --images "VEO Images" --cameras "VEO Images/cameras.json" --out detections.json` (and `--selftest` first). It tiles each photo (1280, stride 960),
+runs YOLO, maps boxes to FULL-image pixels, applies NMS and the location gate, and writes `detections.json` in exactly the shape of `POST /detections`:
+`{"image","class":"abb_relion_615","conf","box":[x,y,w,h],"ocr":[],"ocr_conf":null,"position":{x,y,z}|null}`. `position` is the detection's centre ray intersected with the relay front plane of the gate-assigned cabinet;
+`null` if the gate rejected it (the backend then flags `needs_review`). Low-confidence/rejected detections stay in the file. `other_hmi` is never exported. Tested with a stub model against the real backend.
 
 ## 13. Deliverables, in order
 1. Dataset generated + `check_dataset.py` report (counts, sheets, defects found/fixed).
