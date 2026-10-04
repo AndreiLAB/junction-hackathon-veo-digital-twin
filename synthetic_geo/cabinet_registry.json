@@ -212,15 +212,21 @@
    "position_source": "outputs/physical_tags.csv (Andrei's pipeline)",
    "panel_model": null,
    "panel_model_source": null,
-   "expects_relay": false,
+   "expects_relay": true,
    "document_models": [],
    "images": false,
    "assets": [
     {
-     "asset": "ABB relays (2, 615 series assumed from the front panel)",
+     "asset": "ABB relay A (upper, 615 series assumed from the front panel)",
      "class": "abb_relion_615",
      "manual_model": "ABB 615",
-     "status": "offsets measured once from img_032: A (dy -0.188, dz +0.166), B (dy -0.213, dz -0.152); size not measured; UNLABELLED in dataset v1"
+     "status": "geometry measured and verified on 8 photos: dy -0.155, dz +0.145, narrow standard case 0.177 x 0.177 m, front plane 0.035 m (see OT1_CORRECTION.md). UNLABELLED in dataset v1"
+    },
+    {
+     "asset": "ABB relay B (lower)",
+     "class": "abb_relion_615",
+     "manual_model": "ABB 615",
+     "status": "geometry measured and verified on 8 photos: dy -0.155, dz -0.160, narrow standard case 0.177 x 0.177 m, front plane 0.035 m (see OT1_CORRECTION.md)"
     }
    ]
   },

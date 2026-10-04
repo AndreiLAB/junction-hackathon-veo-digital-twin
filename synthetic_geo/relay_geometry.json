@@ -113,5 +113,26 @@
    "H01": "its window is at a different position (see img_045); measure it"
   },
   "source": "read from img_067 (H02); the projected box matches the window on H02, H04, H05 in img_033, 025, 045, 052. Small: ~120 px wide at 2.4 m in a 4096 photo, so use native-resolution tiles."
+ },
+ "OT1_relays_corrected": {
+  "cabinet": "OT1",
+  "door_normal": "-x",
+  "note": "Use these, NOT the first measurement. Verified with verify_boxes.py on img_043,038,052,063,075,082,088,094. Per-relay front_plane_m (default for H01-H05 stays 0.07).",
+  "relays": [
+   {
+    "dy": -0.155,
+    "dz": 0.145,
+    "width_m": 0.177,
+    "height_m": 0.177,
+    "front_plane_m": 0.035
+   },
+   {
+    "dy": -0.155,
+    "dz": -0.16,
+    "width_m": 0.177,
+    "height_m": 0.177,
+    "front_plane_m": 0.035
+   }
+  ]
  }
 }
