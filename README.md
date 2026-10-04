@@ -2,6 +2,9 @@
 
 Digital twin platform for VEO company - Junction Hackathon Team JSC
 
+## Demo link
+https://junction-hackathon-veo-digital-twin-12tad95tn-jsc14.vercel.app/
+
 ## VEO Visual Localization Pipeline
 
 This repository contains the complete research and prototype visual localization pipeline built for ASTM E57 digital twins (Matterport / VEO360 scans).
